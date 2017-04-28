@@ -7,11 +7,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/about', function(req, res, next) {
-    res.render('about');
+    res.render('about', { title: 'About'});
 });
 
 router.get('/login', function(req, res, next) {
-    res.render('login', {flash: req.flash('error')});
+    res.render('login', { title: 'Login', flash: req.flash('error') });
 });
 
 router.post('/login', function(req, res, next) {
@@ -20,7 +20,7 @@ router.post('/login', function(req, res, next) {
 });
 
 router.get('/map', function(req, res, next) {
-    res.render('map');
+    res.render('map', { title: 'Map' });
 });
 
 module.exports = router;

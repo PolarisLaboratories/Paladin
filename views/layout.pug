@@ -1,5 +1,8 @@
 extends ../node_modules/pug-bootstrap/_bootstrap.pug
 
+append head
+    title= title
+
 append body
     +navbar("Paladin", "dropdown_menu")
         +nav_item("/") Home
