@@ -3,16 +3,20 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Paladin' });
+    res.render('index', { title: 'Paladin' });
+});
+
+router.get('/about', function(req, res, next) {
+    res.render('about');
 });
 
 router.get('/login', function(req, res, next) {
-  res.render('login', {flash: req.flash('error')});
+    res.render('login', {flash: req.flash('error')});
 });
 
 router.post('/login', function(req, res, next) {
-  console.log(req.body);
-  res.redirect('/login');
+    console.log(req.body);
+    res.redirect('/login');
 });
 
 module.exports = router;
