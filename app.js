@@ -1,4 +1,5 @@
 var express = require('express');
+var passport = require('passport');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -11,6 +12,9 @@ var users = require('./routes/users');
 var ws = require('./lib/wss.js');
 
 var app = express();
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
