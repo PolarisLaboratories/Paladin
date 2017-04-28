@@ -4,6 +4,6 @@ append body
     .container
         +panel-primary("Login")
             form(method="post")
-                +input("text","username","Username")
-                +input("password","password","Password")
+                +input("text","username","Username", { 'name': 'username', 'required': 'true' })
+                +input("password","password","Password", { 'name': 'password', 'required': 'true' })
                 +submit("Login")

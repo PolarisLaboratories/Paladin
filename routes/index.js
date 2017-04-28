@@ -11,7 +11,7 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-  console.log('Login request received');
+  console.log(req.body);
   res.redirect('/login');
 });
 
