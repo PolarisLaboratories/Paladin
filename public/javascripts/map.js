@@ -3,6 +3,11 @@ var paladinws = new PaladinWebSocket("ws://localhost:1234/api");
 var width = $(document).width();
 var height = $(document).height();
 
+// Disable the scroll bar
+document.documentElement.style.overflow = 'hidden';
+// Only for IE
+document.body.scroll = 'no';
+
 var zoom = d3.zoom()
     .scaleExtent([1, 8])
     .on("zoom", zoomed);
