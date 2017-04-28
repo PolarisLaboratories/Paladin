@@ -1,7 +1,6 @@
 extends ../node_modules/pug-bootstrap/_bootstrap.pug
 
 append body
-    .container
-        +navbar("Paladin", "dropdown_menu", "inverse")
-            +nav_item("/") Home
-            +nav_item("/login") Login
+    +navbar("Paladin", "dropdown_menu")
+        +nav_item("/") Home
+        +nav_item("/login") Login
