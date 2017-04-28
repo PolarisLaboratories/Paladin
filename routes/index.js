@@ -19,4 +19,8 @@ router.post('/login', function(req, res, next) {
     res.redirect('/login');
 });
 
+router.get('/map', function(req, res, next) {
+    res.render('map');
+});
+
 module.exports = router;
