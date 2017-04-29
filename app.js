@@ -7,6 +7,7 @@ var logger = require('morgan');
 var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var hsts = require('hsts')
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -17,6 +18,11 @@ var app = express();
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// HSTS
+app.use(hsts({
+  maxAge: 15552000  // 180 days in seconds
+}))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
