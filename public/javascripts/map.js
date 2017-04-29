@@ -1,4 +1,8 @@
-var paladinws = new PaladinWebSocket("ws://localhost:1234/api");
+var hostname = window.location.hostname;
+var wsaddr = "wss://".concat(hostname, ":1234/api");
+console.log("Connecting to " + wsaddr);
+
+var paladinws = new PaladinWebSocket(wsaddr);
 
 var width = $(document).width();
 var height = $(document).height();
