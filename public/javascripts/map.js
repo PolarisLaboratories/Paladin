@@ -1,9 +1,21 @@
 var hostname = window.location.hostname;
 var wsaddr = "wss://".concat(hostname, ":1234/api");
-console.log("Connecting to " + wsaddr);
 
-var paladinws = new PaladinWebSocket(wsaddr);
+/*
+ * Useful functions
+ */
+function map_alert(message) {
+    $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert alert-info alert-dismissible show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
+    $(".alert-dismissible").delay(3000).fadeOut("slow", function () { $(this).remove(); });
+}
 
+function message_handler(event) {
+    map_alert(event.data);
+}
+
+/*
+ * Initialize the page SVG and controls
+ */
 var width = $(document).width();
 var height = $(document).height();
 
@@ -30,3 +42,11 @@ svg.call(zoom);
 
 g.append("svg:image")
     .attr("xlink:href", "images/US.svg")
+
+/*
+ * Connect to the web socket
+ */
+var paladinws = new PaladinWebSocket(wsaddr);
+paladinws.ws.onmessage = message_handler;
+
+map_alert("Connected to " + wsaddr);
