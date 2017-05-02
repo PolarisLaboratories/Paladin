@@ -17,6 +17,7 @@ function message_handler(event) {
 
 var functions = {
     'config': setup,
+    'debug': log,
 };
 
 /*
@@ -30,6 +31,12 @@ map_alert("Connected to " + wsaddr);
 /*
  * Event based handling
  */
+
+function log(response) {
+    console.log(response.data);
+    map_alert(response.data);
+}
+
 function setup(response) {
     config = response;
     /*
