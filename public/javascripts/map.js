@@ -17,7 +17,7 @@ function message_handler(event) {
 
 var functions = {
     'config': setup,
-    'debug': log,
+    'raw': log,
 };
 
 /*
