@@ -16,7 +16,7 @@ function message_handler(event) {
 }
 
 var functions = {
-    'setup': setup,
+    'config': setup,
 };
 
 /*
@@ -27,6 +27,9 @@ paladinws.ws.onmessage = message_handler;
 
 map_alert("Connected to " + wsaddr);
 
+/*
+ * Event based handling
+ */
 function setup(response) {
     config = response;
     /*
