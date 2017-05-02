@@ -5,14 +5,23 @@ var config;
 /*
  * Useful functions
  */
-function map_alert(message) {
-    $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert alert-info alert-dismissible show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
-    $(".alert-dismissible").delay(3000).fadeOut("slow", function () { $(this).parent('div').remove(); $(this).remove(); });
+function banner(type, message, delay) {
+    $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert ' + type + ' show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
+    if (delay >= 0) {
+        $(".alert").delay(3000).fadeOut("slow", function () { $(this).parent('div').remove(); $(this).remove(); });
+    }
+}
+function ws_error(event) {
+    banner("alert-danger", "An error occurred: " + event.data, -1);
 }
 
-function message_handler(event) {
+function ws_handler(event) {
     var response = JSON.parse(event.data);
-    functions[response.type](response);
+    try {
+        functions[response.type](response);
+    } catch (err) {
+        banner("alert-danger", { "data": "No handler for WebSocket type." }, -1);
+    }
 }
 
 var functions = {
@@ -21,12 +30,24 @@ var functions = {
 };
 
 /*
+ * Disable the scroll bar
+ */
+document.documentElement.style.overflow = 'hidden';
+// Only for IE
+document.body.scroll = 'no';
+
+/*
  * Connect to the web socket
  */
-var paladinws = new PaladinWebSocket(wsaddr);
-paladinws.ws.onmessage = message_handler;
+try {
+    var paladinws = new PaladinWebSocket(wsaddr);
+} catch (err) {
+    banner("alert-danger", "An error occurred while connecting. Please contact Polaris Laboratories. Error: " + err, -1);
+}
+paladinws.ws.onmessage = ws_handler;
+paladinws.ws.onerror = ws_error;
 
-map_alert("Connected to " + wsaddr);
+banner("alert-info", "Connected to " + wsaddr, 3000);
 
 /*
  * Event based handling
@@ -34,21 +55,19 @@ map_alert("Connected to " + wsaddr);
 
 function log(response) {
     console.log(response.data);
-    map_alert(response.data);
+    banner("alert-info", response.data, 2000);
 }
 
 function setup(response) {
+    $("link[href='stylesheets/loading.css']").remove();
+    $("div.loading").remove();
+
     config = response;
     /*
      * Initialize the page SVG and controls
      */
     var width = $(document).width();
     var height = $(document).height();
-
-    // Disable the scroll bar
-    document.documentElement.style.overflow = 'hidden';
-    // Only for IE
-    document.body.scroll = 'no';
 
     var zoom = d3.zoom()
         .scaleExtent([1, 8])
