@@ -37,6 +37,33 @@ document.documentElement.style.overflow = 'hidden';
 document.body.scroll = 'no';
 
 /*
+ * Register all onload stuff here
+ */
+$(document).ready(function(){
+    $('#zoom-reset').click(zoom_reset);
+    $('#zoom-in').click(zoom_in);
+    $('#zoom-out').click(zoom_out);
+});
+
+/*
+ * Initialize the page SVG and controls
+ */
+var width = $(document).width();
+var height = $(document).height();
+
+var zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+
+var svg = d3.select("svg")
+    .attr("width", width)
+    .attr("height", height)
+
+g = svg.append("g");
+
+svg.call(zoom);
+
+/*
  * Connect to the web socket
  */
 try {
@@ -63,28 +90,34 @@ function setup(response) {
     $("div.loading").remove();
 
     config = response;
-    /*
-     * Initialize the page SVG and controls
-     */
-    var width = $(document).width();
-    var height = $(document).height();
-
-    var zoom = d3.zoom()
-        .scaleExtent([1, 8])
-        .on("zoom", zoomed);
-
-    var svg = d3.select("svg")
-        .attr("width", width)
-        .attr("height", height)
-
-    g = svg.append("g");
-
-    function zoomed () {
-        g.attr("transform", d3.event.transform);
-    }
-
-    svg.call(zoom);
 
     g.append("svg:image")
         .attr("xlink:href", config.map)
+        .attr("x", "16%")
+        .attr("y", "10%")
 }
+
+/*
+ * User interface stuff
+ */
+ function zoomed () {
+     g.attr("transform", d3.event.transform);
+ }
+
+ function zoom_reset() {
+     svg.transition()
+        .duration(750)
+        .call(zoom.transform, d3.zoomIdentity);
+ }
+
+ function zoom_in() {
+     svg.transition()
+        .duration(750)
+        .call(zoom.scaleBy, 2);
+ }
+
+ function zoom_out() {
+     svg.transition()
+        .duration(750)
+        .call(zoom.scaleBy, 0.5);
+ }
