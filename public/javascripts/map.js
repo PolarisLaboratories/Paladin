@@ -60,7 +60,7 @@ function connect() {
     try {
         ws = new WebSocket(wsaddr);
     } catch (err) {
-        banner("alert-danger", "An error occurred while connecting. Please contact Polaris Laboratories. Error: " + err, -1);
+        banner("alert-danger", ws_error(err), -1);
     }
     ws.onmessage = ws_handler;
     ws.onerror = ws_error;
@@ -68,8 +68,8 @@ function connect() {
     banner("alert-info", "Connected to " + wsaddr, 3000);
 }
 
-function ws_error(event) {
-    banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + event.data, -1);
+function ws_error(message) {
+    banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + message, -1);
 }
 
 function ws_handler(event) {
@@ -77,9 +77,7 @@ function ws_handler(event) {
     try {
         functions[response.type](response);
     } catch (err) {
-        //- Hijack the error message since it would just show 'undefined'
-        err.data = "Server sent unknown WebSocket data.";
-        ws_error(err);
+        ws_error("Server sent unknown WebSocket data.");
     }
 }
 
