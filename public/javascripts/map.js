@@ -44,7 +44,7 @@ $(document).ready(function() {
     $('#zoom-out').click(zoom_out);
 
     // Initialize all tooltips
-    $('[data-toggle="tooltip"]').tooltip(); 
+    $('[data-toggle="tooltip"]').tooltip();
 
     // Disable the scroll bar
     document.documentElement.style.overflow = 'hidden';
@@ -91,8 +91,18 @@ function setup(response) {
 
     config = response;
 
+    // Grab the dimensions from the imsage
+    var image = new Image();
+    image.src = config.map;
+
     g.append("svg:image")
         .attr("xlink:href", config.map)
+        .attr("x", "50%")
+        .attr("y", "50%")
+        .attr("width", image.width + "px")
+        .attr("height", image.height + "px")
+        // Disgusting string concatenation
+        .attr("transform", "translate(-" + image.width / 2 + ", -" + image.height / 2 + ")")
 }
 
 /*
