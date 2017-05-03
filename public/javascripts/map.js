@@ -16,23 +16,6 @@ function banner(type, message, delay) {
         $(".alert").delay(3000).fadeOut("slow", function () { $(this).parent('div').remove(); $(this).remove(); });
     }
 }
-function ws_error(event) {
-    banner("alert-danger", "An error occurred: " + event.data, -1);
-}
-
-function ws_handler(event) {
-    var response = JSON.parse(event.data);
-    try {
-        functions[response.type](response);
-    } catch (err) {
-        banner("alert-danger", "No handler for WebSocket packet.", -1);
-    }
-}
-
-var functions = {
-    'config': setup,
-    'raw': log,
-};
 
 /*
  * Register all onload stuff here
@@ -66,7 +49,12 @@ $(document).ready(function() {
     connect();
 });
 
-// Connect to the web socket
+// WebSocket low level stuff. See below these for the message handlers
+var functions = {
+    'config': setup,
+    'raw': raw,
+};
+
 function connect() {
     try {
         var paladinws = new PaladinWebSocket(wsaddr);
@@ -79,8 +67,23 @@ function connect() {
     banner("alert-info", "Connected to " + wsaddr, 3000);
 }
 
+function ws_error(event) {
+    banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + event.data, -1);
+}
+
+function ws_handler(event) {
+    var response = JSON.parse(event.data);
+    try {
+        functions[response.type](response);
+    } catch (err) {
+        //- Hijack the error message since it would just show 'undefined'
+        err.data = "Server sent unknown WebSocket data.";
+        ws_error(err);
+    }
+}
+
 // WebSocket message handlers
-function log(response) {
+function raw(response) {
     console.log(response.data);
     banner("alert-info", response.data, 2000);
 }
