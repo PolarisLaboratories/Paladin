@@ -18,6 +18,10 @@ function banner(type, message, delay) {
     }
 }
 
+function error(message) {
+    banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + message, -1);
+}
+
 /*
  * Register all onload stuff here
  */
@@ -60,7 +64,7 @@ function connect() {
     try {
         ws = new WebSocket(wsaddr);
     } catch (err) {
-        banner("alert-danger", ws_error(err), -1);
+        banner("alert-danger", error(err), -1);
     }
     ws.onmessage = ws_handler;
     ws.onerror = ws_error;
@@ -69,7 +73,7 @@ function connect() {
 }
 
 function ws_error(message) {
-    banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + message, -1);
+    return error(message);
 }
 
 function ws_handler(event) {
@@ -77,7 +81,7 @@ function ws_handler(event) {
     try {
         functions[response.type](response);
     } catch (err) {
-        ws_error("Server sent unknown WebSocket data.");
+        error("Server sent unknown WebSocket data.");
     }
 }
 
@@ -96,6 +100,11 @@ function setup(response) {
     // Grab the dimensions from the imsage
     var image = new Image();
     image.src = config.map;
+    if (image.width === 0 || image.height === 0)
+    {
+        error("Invalid image metadata");
+        return;
+    }
 
     g.append("svg:image")
         .attr("xlink:href", config.map)
