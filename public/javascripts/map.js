@@ -1,5 +1,5 @@
 var hostname = window.location.hostname;
-var wsaddr = "ws://".concat(hostname, ":1234/api");
+var wsaddr = "wss://".concat(hostname, "/api");
 var config;
 
 /*
