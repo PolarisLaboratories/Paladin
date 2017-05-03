@@ -2,10 +2,11 @@ extends ../node_modules/pug-bootstrap/_bootstrap.pug
 
 append head
     link(href="stylesheets/loading.css", rel="stylesheet")
-    //- <meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
 
 //- Looks pretty empty :) Most of this is done in Javascript.
 append body
+    //- These divs will be removed in the Javascript once the page loads
     div(id="main" class="loading")
     div(class="loading ball-one")
     div(class="loading ball-two")
