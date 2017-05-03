@@ -42,6 +42,10 @@ $(document).ready(function() {
     $('#zoom-reset').click(zoom_reset);
     $('#zoom-in').click(zoom_in);
     $('#zoom-out').click(zoom_out);
+
+    // Initialize all tooltips
+    $('[data-toggle="tooltip"]').tooltip(); 
+
     // Disable the scroll bar
     document.documentElement.style.overflow = 'hidden';
     // Only for IE
