@@ -38,6 +38,7 @@ $(document).ready(function() {
     document.documentElement.style.overflow = 'hidden';
     // Only for IE
     document.body.scroll = 'no';
+
     // Initialize page properties
     zoom = d3.zoom()
         .scaleExtent([1, 8])
@@ -92,28 +93,24 @@ function raw(response) {
 }
 
 function setup(response) {
-    $("link[href='stylesheets/loading.css']").remove();
-    $("div.loading").remove();
-
     config = response;
 
     // Grab the dimensions from the imsage
     var image = new Image();
     image.src = config.map;
-    if (image.width === 0 || image.height === 0)
-    {
-        error("Invalid image metadata");
-        return;
-    }
 
-    g.append("svg:image")
-        .attr("xlink:href", config.map)
-        .attr("x", "50%")
-        .attr("y", "50%")
-        .attr("width", image.width + "px")
-        .attr("height", image.height + "px")
-        // Disgusting string concatenation
-        .attr("transform", "translate(-" + image.width / 2 + ", -" + image.height / 2 + ")")
+    image.onload = function() {
+        g.append("svg:image")
+            .attr("xlink:href", config.map)
+            .attr("x", "50%")
+            .attr("y", "50%")
+            .attr("width", image.width + "px")
+            .attr("height", image.height + "px")
+            // Disgusting string concatenation
+            .attr("transform", "translate(-" + image.width / 2 + ", -" + image.height / 2 + ")")
+        $("link[href='stylesheets/loading.css']").remove();
+        $("div.loading").remove();
+    }
 }
 
 /*
