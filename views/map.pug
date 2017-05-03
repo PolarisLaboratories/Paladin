@@ -1,22 +1,28 @@
 extends ../node_modules/pug-bootstrap/_bootstrap.pug
 
 append head
+    //- CSS for the loading animation. Will be removed once page loads
     link(href="stylesheets/loading.css", rel="stylesheet")
+    //- CSS for the map
     link(href="stylesheets/map.css", rel="stylesheet")
+    //- Block WebSocket connections to other URLs besides the current one.
+    //- In line with the current security recommendations when working with
+    //- WebSockets.
     <meta http-equiv="Content-Security-Policy" content="connect-src 'self' wss:">
 
-//- Looks pretty empty :) Most of this is done in Javascript.
 append body
     //- These divs will be removed in the Javascript once the page loads
     div(id="main" class="loading")
     div(class="loading ball-one")
     div(class="loading ball-two")
     div(class="loading ball-three")
+    //- Account label and links (the thing in the top right corner)
     div(id="account-bar")
         p(style="text-align: right")
             | Welcome!
             br
             a(href="/login") Signout
+    //- Zoom controls
     div(id="zoom-bar" class="btn-group-vertical")
         button(class="btn" id="zoom-in" data-toggle="tooltip" title="Zoom in")
             span(class="glyphicon glyphicon-zoom-in")
@@ -24,10 +30,15 @@ append body
             span(class="glyphicon glyphicon-picture")
         button(class="btn" id="zoom-out" data-toggle="tooltip" title="Zoom out")
             span(class="glyphicon glyphicon-zoom-out")
+    //- We insert the svg here instead of doing it with d3 because it's easier
+    //- to set CSS from here
     svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
         
 
 append scripts
+    //- Load d3 before our scripts, otherwise we get errors about undefined
+    //- functions.
     script(src="https://d3js.org/d3.v4.min.js")
+    //- Load our scripts
     script(src="../javascripts/ws.js")
     script(src="../javascripts/map.js")
