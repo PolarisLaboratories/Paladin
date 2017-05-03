@@ -2,9 +2,14 @@ var hostname = window.location.hostname;
 var wsaddr = "wss://".concat(hostname, "/api");
 var config;
 
-/*
- * Useful functions
- */
+var width = $(document).width();
+var height = $(document).height();
+
+var svg;
+var zoom;
+var g;
+
+// Alert functions
 function banner(type, message, delay) {
     $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert ' + type + ' show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
     if (delay >= 0) {
@@ -30,56 +35,47 @@ var functions = {
 };
 
 /*
- * Disable the scroll bar
- */
-document.documentElement.style.overflow = 'hidden';
-// Only for IE
-document.body.scroll = 'no';
-
-/*
  * Register all onload stuff here
  */
-$(document).ready(function(){
+$(document).ready(function() {
+    // Add handlers for the buttons
     $('#zoom-reset').click(zoom_reset);
     $('#zoom-in').click(zoom_in);
     $('#zoom-out').click(zoom_out);
+    // Disable the scroll bar
+    document.documentElement.style.overflow = 'hidden';
+    // Only for IE
+    document.body.scroll = 'no';
+    // Initialize page properties
+    zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed);
+
+    svg = d3.select("svg")
+        .attr("width", width)
+        .attr("height", height)
+
+    g = svg.append("g");
+
+    svg.call(zoom);
+
+    connect();
 });
 
-/*
- * Initialize the page SVG and controls
- */
-var width = $(document).width();
-var height = $(document).height();
+// Connect to the web socket
+function connect() {
+    try {
+        var paladinws = new PaladinWebSocket(wsaddr);
+    } catch (err) {
+        banner("alert-danger", "An error occurred while connecting. Please contact Polaris Laboratories. Error: " + err, -1);
+    }
+    paladinws.ws.onmessage = ws_handler;
+    paladinws.ws.onerror = ws_error;
 
-var zoom = d3.zoom()
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed);
-
-var svg = d3.select("svg")
-    .attr("width", width)
-    .attr("height", height)
-
-g = svg.append("g");
-
-svg.call(zoom);
-
-/*
- * Connect to the web socket
- */
-try {
-    var paladinws = new PaladinWebSocket(wsaddr);
-} catch (err) {
-    banner("alert-danger", "An error occurred while connecting. Please contact Polaris Laboratories. Error: " + err, -1);
+    banner("alert-info", "Connected to " + wsaddr, 3000);
 }
-paladinws.ws.onmessage = ws_handler;
-paladinws.ws.onerror = ws_error;
 
-banner("alert-info", "Connected to " + wsaddr, 3000);
-
-/*
- * Event based handling
- */
-
+// WebSocket message handlers
 function log(response) {
     console.log(response.data);
     banner("alert-info", response.data, 2000);
