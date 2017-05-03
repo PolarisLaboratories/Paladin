@@ -89,8 +89,6 @@ function setup(response) {
 
     g.append("svg:image")
         .attr("xlink:href", config.map)
-        .attr("x", "16%")
-        .attr("y", "10%")
 }
 
 /*

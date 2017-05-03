@@ -12,14 +12,15 @@ append body
     div(class="loading ball-one")
     div(class="loading ball-two")
     div(class="loading ball-three")
-    div(id="zoom-bar" class="btn-group-vertical" style="position: absolute; right: 2%; top: 10%;")
+    div(id="zoom-bar" class="btn-group-vertical")
         button(class="btn" id="zoom-in")
             span(class="glyphicon glyphicon-zoom-in")
         button(class="btn" id="zoom-reset")
             span(class="glyphicon glyphicon-picture")
         button(class="btn" id="zoom-out")
             span(class="glyphicon glyphicon-zoom-out")
-    svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
+    .svg-container
+        svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;" class="svg-content-responsive")
         
 
 append scripts
