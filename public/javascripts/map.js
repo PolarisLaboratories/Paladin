@@ -1,7 +1,8 @@
 var hostname = window.location.hostname;
 var wsaddr = "wss://".concat(hostname, "/api");
-var config;
+var ws;
 
+var config;
 var width = $(window).width();
 var height = $(window).height();
 
@@ -57,12 +58,12 @@ var functions = {
 
 function connect() {
     try {
-        var paladinws = new PaladinWebSocket(wsaddr);
+        ws = new WebSocket(wsaddr);
     } catch (err) {
         banner("alert-danger", "An error occurred while connecting. Please contact Polaris Laboratories. Error: " + err, -1);
     }
-    paladinws.ws.onmessage = ws_handler;
-    paladinws.ws.onerror = ws_error;
+    ws.onmessage = ws_handler;
+    ws.onerror = ws_error;
 
     banner("alert-info", "Connected to " + wsaddr, 3000);
 }
