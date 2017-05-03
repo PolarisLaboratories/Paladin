@@ -20,7 +20,7 @@ function ws_handler(event) {
     try {
         functions[response.type](response);
     } catch (err) {
-        banner("alert-danger", { "data": "No handler for WebSocket type." }, -1);
+        banner("alert-danger", "No handler for WebSocket packet.", -1);
     }
 }
 
