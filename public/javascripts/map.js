@@ -2,8 +2,8 @@ var hostname = window.location.hostname;
 var wsaddr = "wss://".concat(hostname, "/api");
 var config;
 
-var width = $(document).width();
-var height = $(document).height();
+var width = $(window).width();
+var height = $(window).height();
 
 var svg;
 var zoom;
