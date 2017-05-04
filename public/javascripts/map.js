@@ -34,11 +34,6 @@ $(document).ready(function() {
     // Initialize all tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
-    // Disable the scroll bar
-    document.documentElement.style.overflow = 'hidden';
-    // Only for IE
-    document.body.scroll = 'no';
-
     // Initialize page properties
     zoom = d3.zoom()
         .scaleExtent([1, 8])
