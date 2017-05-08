@@ -2,10 +2,16 @@ language: node_js
 node_js:
   - "node"
 
+before_deploy:
+  - zip -r Paladin * || true
+  - mkdir -p "upload"
+  - mv Paladin.zip "upload/Paladin.zip"
+
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
+    local_dir: upload
     bucket: "polaris.paladin.deploy"
     region: us-east-2
     on:
@@ -14,6 +20,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
     bucket: "polaris.paladin.deploy"
+    key: Paladin.zip
     bundle_type: zip
     application: Paladin
     deployment_group: Paladin
