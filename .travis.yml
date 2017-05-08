@@ -3,15 +3,16 @@ node_js:
   - "node"
 
 before_deploy:
-  - zip -r Paladin * || true
-  - mkdir -p "upload"
-  - mv Paladin.zip "upload/Paladin.zip"
+  - zip -r Paladin * -x *.git* -x "node_modules/*" || true
+  - mkdir -p upload
+  - mv Paladin.zip upload/Paladin.zip
 
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
     local_dir: upload
+    skip_cleanup: true
     bucket: "polaris.paladin.deploy"
     region: us-east-2
     on:
