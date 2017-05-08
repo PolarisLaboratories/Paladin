@@ -9,6 +9,10 @@ hooks:
       timeout: 600
       runas: ubuntu
   ApplicationStart:
-    - location: run.sh
+    - location: start.sh
       timeout: 120
+      runas: ubuntu
+  ValidateService:
+    - location: validate.sh
+      timeout: 180
       runas: ubuntu
