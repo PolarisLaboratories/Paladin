@@ -4,7 +4,7 @@ files:
   - source: /
     destination: /home/ubuntu/Paladin
 permissions:
-  - object: /home/ubuntu/Paladin
+  - object: /home/ubuntu
     owner: ubuntu
     group: ubuntu
     type:
