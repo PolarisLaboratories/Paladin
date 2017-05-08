@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - "node"
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: "polaris.paladin.deploy"
+    region: us-east-2
+    on:
+      branch: master
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_key_id: $AWS_SECRET_KEY
+    bucket: "polaris.paladin.deploy"
+    bundle_type: zip
+    application: Paladin
+    deployment_group: Paladin
+    region: us-east-2
+    on:
+      branch: master
+notifications:
+  slack: polarislabs:fGkXWORxxoqtsiBAAFApzeEM
