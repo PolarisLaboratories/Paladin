@@ -3,6 +3,13 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/Paladin
+permissions:
+  - object: /home/ubuntu/Paladin
+    owner: ubuntu
+    group: ubuntu
+    type:
+      - directory
+      - file
 hooks:
   AfterInstall:
     - location: post_install.sh
