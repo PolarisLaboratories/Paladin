@@ -4,10 +4,6 @@ files:
   - source: /
     destination: /home/ubuntu/Paladin
 hooks:
-  BeforeInstall:
-    - location: install.sh
-      timeout: 300
-      runas: root
   AfterInstall:
     - location: post_install.sh
       timeout: 600
