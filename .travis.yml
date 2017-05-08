@@ -21,5 +21,4 @@ deploy:
     on:
       branch: master
 notifications:
-  notifications:
-    slack: polarislabs:fGkXWORxxoqtsiBAAFApzeEM
+  slack: polarislabs:fGkXWORxxoqtsiBAAFApzeEM
