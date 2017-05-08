@@ -33,18 +33,18 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY
     local_dir: upload
     skip_cleanup: true
-    bucket: "polaris.paladin.staging.deploy"
+    bucket: "polaris.paladin.development.deploy"
     region: us-east-2
     on:
       branch: develop
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
-    bucket: "polaris.paladin.staging.deploy"
+    bucket: "polaris.paladin.development.deploy"
     key: Paladin.zip
     bundle_type: zip
     application: Paladin
-    deployment_group: Paladin-Staging
+    deployment_group: Paladin-Development
     region: us-east-2
     on:
       branch: develop
