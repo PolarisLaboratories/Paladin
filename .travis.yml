@@ -36,7 +36,7 @@ deploy:
     bucket: "polaris.paladin.development.deploy"
     region: us-east-2
     on:
-      branch: master
+      branch: develop
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
@@ -47,6 +47,6 @@ deploy:
     deployment_group: Paladin-Development
     region: us-east-2
     on:
-      branch: master
+      branch: develop
 notifications:
   slack: polarislabs:fGkXWORxxoqtsiBAAFApzeEM
