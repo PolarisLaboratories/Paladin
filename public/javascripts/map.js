@@ -22,6 +22,10 @@ function error(message) {
     banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + message, -1);
 }
 
+function warning(message) {
+    banner("alert-warning", "Something unexpected occurred. Please contact Polaris Laboratories. Event: " + message, 5000);
+}
+
 // Register all onload stuff here
 $(document).ready(function() {
     // Add handlers for the buttons
@@ -75,7 +79,7 @@ function ws_handler(event) {
     try {
         functions[response.type](response);
     } catch (err) {
-        error("Server sent unknown WebSocket data.");
+        warning("Server sent unknown WebSocket data.");
     }
 }
 
@@ -92,6 +96,7 @@ function setup(response) {
     var image = new Image();
     image.src = config.map;
 
+    // Wait for the image to load, or else we get garbage metadata
     image.onload = function() {
         g.append("svg:image")
             .attr("xlink:href", config.map)
@@ -101,6 +106,7 @@ function setup(response) {
             .attr("height", image.height + "px")
             // Disgusting string concatenation
             .attr("transform", "translate(-" + image.width / 2 + ", -" + image.height / 2 + ")")
+        // Remove the CSS loading element since the map is technically loaded
         $("link[href='stylesheets/loading.css']").remove();
         $("div.loading").remove();
     }
