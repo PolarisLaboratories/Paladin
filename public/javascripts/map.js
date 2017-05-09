@@ -22,9 +22,7 @@ function error(message) {
     banner("alert-danger", "An error occurred. Please contact Polaris Laboratories. Error: " + message, -1);
 }
 
-/*
- * Register all onload stuff here
- */
+// Register all onload stuff here
 $(document).ready(function() {
     // Add handlers for the buttons
     $('#zoom-reset').click(zoom_reset);
@@ -108,27 +106,25 @@ function setup(response) {
     }
 }
 
-/*
- * User interface stuff
- */
- function zoomed () {
-     g.attr("transform", d3.event.transform);
- }
+// User interface stuff
+function zoomed () {
+    g.attr("transform", d3.event.transform);
+}
 
- function zoom_reset() {
-     svg.transition()
-        .duration(750)
-        .call(zoom.transform, d3.zoomIdentity);
- }
+function zoom_reset() {
+    svg.transition()
+       .duration(750)
+       .call(zoom.transform, d3.zoomIdentity);
+}
 
- function zoom_in() {
-     svg.transition()
-        .duration(750)
-        .call(zoom.scaleBy, 2);
- }
+function zoom_in() {
+    svg.transition()
+       .duration(750)
+       .call(zoom.scaleBy, 2);
+}
 
- function zoom_out() {
-     svg.transition()
-        .duration(750)
-        .call(zoom.scaleBy, 0.5);
- }
+function zoom_out() {
+    svg.transition()
+       .duration(750)
+       .call(zoom.scaleBy, 0.5);
+}
