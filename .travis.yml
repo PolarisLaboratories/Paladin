@@ -2,6 +2,10 @@ language: node_js
 node_js:
   - "node"
 
+before_script:
+  - npm start &
+  - sleep 5
+
 before_deploy:
   - zip -r Paladin * -x *.git* -x "node_modules/*" || true
   - mkdir -p upload
