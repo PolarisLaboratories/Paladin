@@ -3,8 +3,8 @@ extends layout
 append body
     .container
         +panel-primary("Login")
-            if (error)
-                +alert('danger', 'Invalid username or password')
+            if (message != "")
+                +alert('danger', message)
             form(method="post")
                 +input("text","username","Username", { 'name': 'username', 'required': 'true' })
                 +input("password","password","Password", { 'name': 'password', 'required': 'true' })

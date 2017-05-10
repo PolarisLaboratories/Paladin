@@ -13,12 +13,14 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-    res.render('login', { title: 'Login' });
+    res.render('login', { title: 'Login', message: req.flash('error') });
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res) {
-    res.redirect('/');
-});
+router.post('/login', passport.authenticate('local', {
+    successRedirect : '/map',
+    failureRedirect : '/login',
+    failureFlash : true
+}));
 
 router.get('/register', function(req, res, next) {
     res.render('register', { title: 'Register' });
