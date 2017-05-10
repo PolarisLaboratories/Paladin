@@ -5,7 +5,15 @@ append body
         +panel-primary("Login")
             if (message != "")
                 +alert('danger', message)
-            form(method="post")
-                +input("text","username","Username", { 'name': 'username', 'required': 'true' })
-                +input("password","password","Password", { 'name': 'password', 'required': 'true' })
-                +submit("Login")
+            form(method="post").form-horizontal
+                .form-group
+                    label(for="username").control-label.col-sm-2 Username:
+                    .col-sm-10
+                        input(type="text" required="true" name="username").form-control#username
+                .form-group
+                    label(for="password").control-label.col-sm-2 Password:
+                    .col-sm-10
+                        input(type="password" required="true" name="password").form-control#password
+                .form-group
+                    .text-center
+                        +submit("Login")
