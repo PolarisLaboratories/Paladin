@@ -6,6 +6,7 @@ var router = express.Router();
 function isAuthenticated(req, res, next) {
     if (req.user)
         return next();
+    req.session.return = req.path;
     req.flash('error', 'Attempting to access a restricted area. Please sign in first');
     res.redirect('/login');
 }
@@ -23,11 +24,14 @@ router.get('/login', function(req, res, next) {
     res.render('login', { title: 'Login', message: req.flash('error') });
 });
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect : '/',
-    failureRedirect : '/login',
-    failureFlash : true
-}));
+router.post('/login', function(req, res, next) {
+    passport.authenticate('local', {
+        successRedirect : req.session.return || '/',
+        failureRedirect : '/login',
+        failureFlash : true
+    })(req, res, next);
+    delete req.session.return;
+});
 
 router.get('/logout', isAuthenticated, function(req, res, next) {
     req.logout();
