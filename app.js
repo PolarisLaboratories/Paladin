@@ -33,6 +33,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Mongoose
+mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://localhost/paladin_admin');
 
 app.use(function (req, res, next) {
