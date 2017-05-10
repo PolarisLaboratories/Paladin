@@ -33,7 +33,12 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Mongoose
-mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
+mongoose.connect('mongodb://localhost/paladin_admin');
+
+app.use(function (req, res, next) {
+    res.locals.login = req.isAuthenticated();
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

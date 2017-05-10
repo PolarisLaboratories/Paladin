@@ -6,6 +6,11 @@ append head
 append body
     +navbar("Paladin", "dropdown_menu")
         +nav_item("/") Home
-        +nav_item("/login") Login
-        +nav_item("/register") Register
-        +nav_item("/about") About
+        if login
+            +nav_item("/map") Map
+            +nav_item("/register") Register
+            +nav_item("/logout") Sign out
+            +nav_item("/about") About
+        else
+            +nav_item("/login") Login
+            +nav_item("/about") About
