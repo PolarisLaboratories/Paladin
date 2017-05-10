@@ -3,6 +3,13 @@ var passport = require('passport');
 var Account = require('../models/account');
 var router = express.Router();
 
+function isAuthenticated(req, res, next) {
+    if (req.user)
+        return next();
+    req.flash('error', 'Attempting to access a restricted area. Please sign in first');
+    res.redirect('/login');
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Paladin' });
@@ -38,7 +45,12 @@ router.post('/register', function(req, res, next) {
     });
 });
 
-router.get('/map', function(req, res, next) {
+router.get('/logout', isAuthenticated, function(req, res, next) {
+    req.logout();
+    res.redirect('/');
+});
+
+router.get('/map', isAuthenticated, function(req, res, next) {
     res.render('map', { title: 'Map' });
 });
 
