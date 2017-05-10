@@ -1,0 +1,30 @@
+extends layout
+
+append body
+    .container
+        h1 Update Profile
+        hr
+        form(method="post").form-horizontal
+            if (message != "")
+                +alert('success', message)
+            h3 Personal details
+            .form-group
+                label(for="firstname").control-label.col-sm-2 First name:
+                .col-sm-10
+                    input(type="text" name="firstname" value=user.firstname).form-control#firstname
+            .form-group
+                label(for="lastname").control-label.col-sm-2 Last name:
+                .col-sm-10
+                    input(type="text" name="lastname" value=user.lastname).form-control#lastname
+            hr
+            h3 Account details
+            .form-group
+                label(for="username").control-label.col-sm-2 Username:
+                .col-sm-10
+                    input(type="text" name="username" value=user.username).form-control#username
+            .form-group
+                label(for="password").control-label.col-sm-2 Password:
+                .col-sm-10
+                    input(type="password" name="password").form-control#password
+            .text-center
+                +submit("Save")

@@ -29,21 +29,6 @@ router.post('/login', passport.authenticate('local', {
     failureFlash : true
 }));
 
-router.get('/register', isAuthenticated, function(req, res, next) {
-    res.render('register', { title: 'Register' });
-});
-
-router.post('/register', function(req, res, next) {
-    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
-        if (err) {
-            return res.render('register', { account : account });
-        }
-        passport.authenticate('local')(req, res, function () {
-            res.redirect('/');
-        });
-    });
-});
-
 router.get('/logout', isAuthenticated, function(req, res, next) {
     req.logout();
     res.redirect('/');
@@ -51,6 +36,38 @@ router.get('/logout', isAuthenticated, function(req, res, next) {
 
 router.get('/map', isAuthenticated, function(req, res, next) {
     res.render('map', { title: 'Map' });
+});
+
+router.get('/register', isAuthenticated, function(req, res, next) {
+    res.render('register', { title: 'Register' });
+});
+
+router.post('/register', function(req, res, next) {
+    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, account) {
+        if (err) {
+            return res.render('register', { title : 'Register' });
+        }
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    });
+});
+
+router.get('/profile', isAuthenticated, function(req, res, next) {
+    res.render('profile', { title: 'Profile', user: req.user, message: req.flash('status') });
+});
+
+router.post('/profile', isAuthenticated, function(req, res, next) {
+    var username = (req.body.username == "") ? req.user.username : req.body.username;
+    var firstname = (req.body.firstname == "") ? req.user.firstname : req.body.firstname;
+    var lastname = (req.body.lastname == "") ? req.user.lastname : req.body.lastname;
+    Account.update({ _id : req.user.id }, { username : username, firstname: firstname, lastname: lastname }, function (err, numberAffected, rawResponse) {
+        if (err) {
+            console.log("Error saving details");
+        }
+    });
+    req.flash('status', 'Profile details updated');
+    res.redirect('/profile');
 });
 
 module.exports = router;
