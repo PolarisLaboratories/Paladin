@@ -1,0 +1,11 @@
+extends layout
+
+append body
+    .container
+        +panel-primary("Register")
+            form(method="post")
+                +input("text","username","Username", { 'name': 'username', 'required': 'true' })
+                +input("password","password","Password", { 'name': 'password', 'required': 'true' })
+                +input("text","email", "Email", { 'name': 'email', 'required': 'true' })
+                +input("password","token", "Token", { 'name': 'token', 'required': 'true' })
+                +submit("Register")

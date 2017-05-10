@@ -1,4 +1,6 @@
 var express = require('express');
+var passport = require('passport');
+var Account = require('../models/account');
 var router = express.Router();
 
 /* GET home page. */
@@ -11,12 +13,27 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-    res.render('login', { title: 'Login', flash: req.flash('error') });
+    res.render('login', { title: 'Login' });
 });
 
-router.post('/login', function(req, res, next) {
-    console.log(req.body);
-    res.redirect('/login');
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
+
+router.get('/register', function(req, res, next) {
+    res.render('register', { title: 'Register' });
+});
+
+router.post('/register', function(req, res, next) {
+    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+        if (err) {
+            return res.render('register', { account : account });
+        }
+
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    });
 });
 
 router.get('/map', function(req, res, next) {

@@ -1,5 +1,4 @@
 var express = require('express');
-var session = require('express-session');
 var passport = require('passport');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,6 +6,8 @@ var logger = require('morgan');
 var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var LocalStrategy = require('passport-local').Strategy;
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -15,8 +16,23 @@ var ws = require('./lib/wss.js');
 
 var app = express();
 
+app.use(cookieParser());
+app.use(require('express-session')({
+    secret: 'blah',
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Passport config
+var Account = require('./models/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+
+// Mongoose
+mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,9 +43,6 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser('secret'));
-app.use(session({cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false, secret: 'secret'}));
-app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
