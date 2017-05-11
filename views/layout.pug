@@ -27,18 +27,16 @@ block body
                                 a(href="/users/create") Create
                             li
                                 a(href="/users/manage") Manage
-                    li.dropdown
-                        a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false") My Account
-                            span.caret
-                        ul.dropdown-menu
-                            li
-                                a(href="/profile") Profile
-                            li
-                                a(href='/logout') Sign out
+                li
+                    a(href='/about') About
+            ul.nav.navbar-nav.navbar-right
+                if login
+                    li
+                        a(href="/profile") Profile
+                    li
+                        a(href='/logout') Sign out
                 else
                     li
                         a(href='/login') Login
-                li
-                    a(href='/about') About
 
 block footer
