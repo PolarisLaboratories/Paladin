@@ -42,21 +42,6 @@ router.get('/map', isAuthenticated, function(req, res, next) {
     res.render('map', { title: 'Map' });
 });
 
-router.get('/register', isAuthenticated, function(req, res, next) {
-    res.render('register', { title: 'Register' });
-});
-
-router.post('/register', function(req, res, next) {
-    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, account) {
-        if (err) {
-            return res.render('register', { title : 'Register' });
-        }
-        passport.authenticate('local')(req, res, function () {
-            res.redirect('/');
-        });
-    });
-});
-
 router.get('/profile', isAuthenticated, function(req, res, next) {
     res.render('profile', { title: 'Profile', user: req.user, message: req.flash('status') });
 });
@@ -72,6 +57,21 @@ router.post('/profile', isAuthenticated, function(req, res, next) {
     });
     req.flash('status', 'Profile details updated');
     res.redirect('/profile');
+});
+
+router.get('/users/create', isAuthenticated, function(req, res, next) {
+    return res.render('users/create', { title : 'Create', message : req.flash('status') });
+});
+
+router.post('/users/create', function(req, res, next) {
+    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, account) {
+        if (err) {
+            req.flash('status', 'An error occurred while creating the user.');
+            return res.redirect('users/create');
+        }
+        req.flash('status', 'User ' + req.body.username + ' created');
+        res.redirect('/users/create');
+    });
 });
 
 module.exports = router;

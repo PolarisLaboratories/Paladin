@@ -8,9 +8,10 @@ append body
         +nav_item("/") Home
         if login
             +nav_item("/map") Map
+            +nav_item_dropdown("#")(label="Users")
+                +nav_item("/users/create") Create
             +nav_item_dropdown("#")(label="My Account")
                 +nav_item("/profile") Profile
-                +nav_item("/register") Register
                 +nav_item("/logout") Sign out
         else
             +nav_item("/login") Login
