@@ -1,0 +1,16 @@
+extends ../layout
+
+append body
+    .container
+        table.table.table-bordered.table-hover
+            thead
+                th ID
+                th Username
+                th First Name
+                th Last Name
+            each user in users
+                tr
+                    td= user.id
+                    td= user.username
+                    td= user.firstname
+                    td= user.lastname

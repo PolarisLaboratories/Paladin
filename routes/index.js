@@ -74,4 +74,10 @@ router.post('/users/create', function(req, res, next) {
     });
 });
 
+router.get('/users/manage', isAuthenticated, function(req, res, next) {
+    Account.find({}, function(err, users) {
+        return res.render('users/manage', { title : 'Manage', users: users });
+    });
+});
+
 module.exports = router;
