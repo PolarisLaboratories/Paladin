@@ -1,3 +1,9 @@
 extends layout
 
 append body
+    .container
+        h1 Hey there!
+        if login
+            p It appears that you are logged in! Choose one of the links above to get started.
+        else
+            p It appears that you are not logged in! Click on the Login link in the corner to get started.
