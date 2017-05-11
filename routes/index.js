@@ -75,6 +75,12 @@ router.post('/users/create', function(req, res, next) {
     });
 });
 
+router.get('/users/edit/:username', isAuthenticated, function(req, res, next) {
+    Account.findOne({ username: req.params.username }, function(err, user) {
+        res.render('users/edit', { title: 'Edit', user: user, message: req.flash('status') });
+    })
+});
+
 router.get('/users/manage', isAuthenticated, function(req, res, next) {
     Account.find({}, function(err, users) {
         return res.render('users/manage', { title : 'Manage', users: users });

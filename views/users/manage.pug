@@ -28,7 +28,7 @@ append body
                         td= user.lastname
                         td
                             .btn-group
-                                a.btn.btn-primary(role='button' href='#') Edit
+                                a.btn.btn-primary(role='button' href='/users/edit/' + user.username) Edit
                                 button.btn.btn-danger(type='button' data-href='/users/delete/' + user.username data-toggle="modal" data-target='#confirm-delete') Delete
         #confirm-delete.modal.fade(role='dialog')
             .modal-dialog
