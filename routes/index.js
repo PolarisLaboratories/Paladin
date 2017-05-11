@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var Account = require('../models/account');
+var mongodb = require('mongodb');
 var router = express.Router();
 
 function isAuthenticated(req, res, next) {
@@ -47,9 +48,9 @@ router.get('/profile', isAuthenticated, function(req, res, next) {
 });
 
 router.post('/profile', isAuthenticated, function(req, res, next) {
-    var username = (req.body.username == "") ? req.user.username : req.body.username;
-    var firstname = (req.body.firstname == "") ? req.user.firstname : req.body.firstname;
-    var lastname = (req.body.lastname == "") ? req.user.lastname : req.body.lastname;
+    let username = (req.body.username == "") ? req.user.username : req.body.username;
+    let firstname = (req.body.firstname == "") ? req.user.firstname : req.body.firstname;
+    let lastname = (req.body.lastname == "") ? req.user.lastname : req.body.lastname;
     Account.update({ _id : req.user.id }, { username : username, firstname: firstname, lastname: lastname }, function (err, numberAffected, rawResponse) {
         if (err) {
             console.log("Error saving details");
@@ -77,6 +78,12 @@ router.post('/users/create', function(req, res, next) {
 router.get('/users/manage', isAuthenticated, function(req, res, next) {
     Account.find({}, function(err, users) {
         return res.render('users/manage', { title : 'Manage', users: users });
+    });
+});
+
+router.get("/users/delete/:username", isAuthenticated, function(req, res, next) {
+    Account.remove({ username : req.params.username }, function(err) {
+        res.redirect('/users/manage');
     });
 });
 
