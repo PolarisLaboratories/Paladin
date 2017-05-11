@@ -75,23 +75,47 @@ router.post('/users/create', function(req, res, next) {
     });
 });
 
-router.get('/users/edit/:username', isAuthenticated, function(req, res, next) {
-    Account.findOne({ username: req.params.username }, function(err, user) {
+router.get('/users/edit/:id', isAuthenticated, function(req, res, next) {
+    Account.findOne({ _id: req.params.id }, function(err, user) {
         res.render('users/edit', { title: 'Edit', user: user, message: req.flash('status') });
     })
 });
 
-router.post('/users/edit/:username', isAuthenticated, function(req, res, next) {
-    let username = (req.body.username == "") ? req.user.username : req.body.username;
-    let firstname = (req.body.firstname == "") ? req.user.firstname : req.body.firstname;
-    let lastname = (req.body.lastname == "") ? req.user.lastname : req.body.lastname;
-    Account.update({ _id : req.user.id }, { username : username, firstname: firstname, lastname: lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
+router.post('/users/edit/:id', isAuthenticated, function(req, res, next) {
+    Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
         if (err) {
             console.log("Error saving details");
         }
     });
     req.flash('status', 'Profile details updated');
-    res.redirect('/users/edit/' + username);
+    res.redirect('/users/edit/' + req.params.id);
+});
+
+router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
+    if (req.user._id != req.params.id && req.user.role != "Administrator") {
+        req.flash('status', 'You do not have permission for this action');
+        return res.redirect('/users/edit/' + req.params.id);
+    }
+    Account.findOne({ _id: req.params.id }, function(err, user) {
+        if (err) {
+            req.flash('status', 'An error occurred: ' + err);
+            return res.redirect('/users/edit/' + req.params.id);
+        }
+        user.setPassword(req.body.password, function(err) {
+            if (err) {
+                req.flash('status', 'An error occurred: ' + err);
+                return res.redirect('/users/edit/' + req.params.id);
+            }
+            user.save(function(err) {
+                if (err) {
+                    req.flash('status', 'An error occurred: ' + err);
+                    return res.redirect('/users/edit/' + req.params.id);
+                }
+            });
+        });
+    });
+    req.flash('status', 'Password updated');
+    return res.redirect('/users/edit/' + req.params.id);
 });
 
 router.get('/users/users', isAuthenticated, function(req, res, next) {
@@ -100,8 +124,8 @@ router.get('/users/users', isAuthenticated, function(req, res, next) {
     });
 });
 
-router.get("/users/delete/:username", isAuthenticated, function(req, res, next) {
-    Account.remove({ username : req.params.username }, function(err) {
+router.get("/users/delete/:id", isAuthenticated, function(req, res, next) {
+    Account.remove({ _id : req.params.id }, function(err) {
         res.redirect('/users/users');
     });
 });
