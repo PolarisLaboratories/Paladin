@@ -65,7 +65,7 @@ router.get('/users/create', isAuthenticated, function(req, res, next) {
 });
 
 router.post('/users/create', function(req, res, next) {
-    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }), req.body.password, function(err, account) {
+    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }), req.body.password, function(err, account) {
         if (err) {
             req.flash('status', 'An error occurred while creating the user.');
             return res.redirect('users/create');
@@ -81,15 +81,28 @@ router.get('/users/edit/:username', isAuthenticated, function(req, res, next) {
     })
 });
 
-router.get('/users/manage', isAuthenticated, function(req, res, next) {
+router.post('/users/edit/:username', isAuthenticated, function(req, res, next) {
+    let username = (req.body.username == "") ? req.user.username : req.body.username;
+    let firstname = (req.body.firstname == "") ? req.user.firstname : req.body.firstname;
+    let lastname = (req.body.lastname == "") ? req.user.lastname : req.body.lastname;
+    Account.update({ _id : req.user.id }, { username : username, firstname: firstname, lastname: lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
+        if (err) {
+            console.log("Error saving details");
+        }
+    });
+    req.flash('status', 'Profile details updated');
+    res.redirect('/users/edit/' + username);
+});
+
+router.get('/users/users', isAuthenticated, function(req, res, next) {
     Account.find({}, function(err, users) {
-        return res.render('users/manage', { title : 'Manage', users: users });
+        return res.render('users/users', { title : 'Users', users: users });
     });
 });
 
 router.get("/users/delete/:username", isAuthenticated, function(req, res, next) {
     Account.remove({ username : req.params.username }, function(err) {
-        res.redirect('/users/manage');
+        res.redirect('/users/users');
     });
 });
 

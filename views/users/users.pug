@@ -13,12 +13,20 @@ append body
         .panel.panel-default
             .panel-heading
                 h3.panel-title Users
+            div(style="margin: 10px")
+                .col-md-6
+                    p #[strong #{users.length}] users in the database
+                .col-md-6.text-right
+                    a.btn.btn-success(role='button' href='/users/create')
+                        span.glyphicon.glyphicon-plus
+                        |  Add user
             table.table.table-bordered.table-hover
                 thead
                     th ID
                     th Username
                     th First Name
                     th Last Name
+                    th Roles
                     th Manage
                 each user in users
                     tr
@@ -26,8 +34,9 @@ append body
                         td= user.username
                         td= user.firstname
                         td= user.lastname
+                        td= user.role
                         td
-                            .btn-group
+                            .btn-toolbar
                                 a.btn.btn-primary(role='button' href='/users/edit/' + user.username) Edit
                                 button.btn.btn-danger(type='button' data-href='/users/delete/' + user.username data-toggle="modal" data-target='#confirm-delete') Delete
         #confirm-delete.modal.fade(role='dialog')

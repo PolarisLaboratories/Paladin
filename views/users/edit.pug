@@ -1,5 +1,12 @@
 extends ../layout
 
+append head
+    script(type='text/javascript').
+        window.onload = function() {
+            var element = document.getElementById("#{user.role}");
+            element.setAttribute("selected", "");
+        }
+
 append body
     .container
         .panel.panel-default
@@ -24,6 +31,14 @@ append body
                         label(for="username").control-label.col-sm-2 Username:
                         .col-sm-10
                             input(type="text" name="username" value=user.username).form-control#username
+                    .form-group
+                        label(for="role").control-label.col-sm-2 Role:
+                        .col-sm-10
+                            select.form-control#role(name="role")
+                                option#Administrator Administrator
+                                option#Teacher Teacher
+                                option#Student Student
+                    h3 Security
                     .form-group
                         label(for="password").control-label.col-sm-2 Password:
                         .col-sm-10
