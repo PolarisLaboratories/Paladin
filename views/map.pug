@@ -1,16 +1,23 @@
-extends ../node_modules/pug-bootstrap/_bootstrap.pug
-
-append head
-    //- CSS for the loading animation. Will be removed once page loads
-    link(href="stylesheets/loading.css", rel="stylesheet")
-    //- CSS for the map
-    link(href="stylesheets/map.css", rel="stylesheet")
+block head
     //- Block WebSocket connections to other URLs besides the current one.
     //- In line with the current security recommendations when working with
     //- WebSockets.
     <meta http-equiv="Content-Security-Policy" content="connect-src 'self' wss:">
+    //- CSS and Javascript for Bootstrap and jQuery
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous")
+    //- CSS for the loading animation. Will be removed once page loads
+    link(href="stylesheets/loading.css", rel="stylesheet")
+    //- CSS for the map
+    link(href="stylesheets/map.css", rel="stylesheet")
+    //- Load d3 before our scripts, otherwise we get errors about undefined
+    //- functions.
+    script(src="https://d3js.org/d3.v4.min.js")
+    //- Load our scripts
+    script(src="../javascripts/map.js")
 
-append body
+block body
     //- These divs will be removed in the Javascript once the page loads
     div(id="main" class="loading")
     div(class="loading ball-one")
@@ -35,11 +42,3 @@ append body
     //- We insert the svg here instead of doing it with d3 because it's easier
     //- to set CSS from here
     svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
-        
-
-append scripts
-    //- Load d3 before our scripts, otherwise we get errors about undefined
-    //- functions.
-    script(src="https://d3js.org/d3.v4.min.js")
-    //- Load our scripts
-    script(src="../javascripts/map.js")

@@ -1,18 +1,42 @@
-extends ../node_modules/pug-bootstrap/_bootstrap.pug
-
-append head
+block head
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous")
+    style(type='text/css').
+        body {
+            padding-top: 70px;
+        }
     title= title
 
-append body
-    +navbar("Paladin", "dropdown_menu")
-        +nav_item("/") Home
-        if login
-            +nav_item("/map") Map
-            +nav_item_dropdown("#")(label="Users")
-                +nav_item("/users/create") Create
-            +nav_item_dropdown("#")(label="My Account")
-                +nav_item("/profile") Profile
-                +nav_item("/logout") Sign out
-        else
-            +nav_item("/login") Login
-        +nav_item("/about") About
+block body
+    nav.navbar.navbar-default.navbar-fixed-top
+        .container-fluid
+            .navbar-header
+                a(href='/').navbar-brand Paladin
+            ul.nav.navbar-nav
+                li
+                    a(href='/') Home
+                if login
+                    li
+                        a(href='/map') Map
+                    li.dropdown
+                        a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false") Users
+                            span.caret
+                        ul.dropdown-menu
+                            li
+                                a(href="/users/create") Create
+                    li.dropdown
+                        a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false") My Account
+                            span.caret
+                        ul.dropdown-menu
+                            li
+                                a(href="/profile") Profile
+                            li
+                                a(href='/logout') Sign out
+                else
+                    li
+                        a(href='/login') Login
+                li
+                    a(href='/about') About
+
+block footer

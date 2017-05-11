@@ -2,25 +2,28 @@ extends ../layout
 
 append body
     .container
-        +panel-primary("Create user")
-            form(method="post").form-horizontal
-                if (message != "")
-                    +alert('success', message)
-                .form-group
-                    label(for="firstname").control-label.col-sm-2 First name:
-                    .col-sm-10
-                        input(type="text" required="true" name="firstname").form-control#firstname
-                .form-group
-                    label(for="lastname").control-label.col-sm-2 Last name:
-                    .col-sm-10
-                        input(type="text" required="true" name="lastname").form-control#lastname
-                .form-group
-                    label(for="username").control-label.col-sm-2 Username:
-                    .col-sm-10
-                        input(type="text" required="true" name="username").form-control#username
-                .form-group
-                    label(for="password").control-label.col-sm-2 Password:
-                    .col-sm-10
-                        input(type="password" required="true" name="password").form-control#password
-                .text-center
-                    +submit("Create")
+        .panel.panel-default
+            .panel-heading
+                h3.panel-title Create user
+            .panel-body
+                form(method="post").form-horizontal
+                    if (message != "")
+                        .alert.alert-success(role="alert") #{message}
+                    .form-group
+                        label(for="firstname").control-label.col-sm-2 First name:
+                        .col-sm-10
+                            input(type="text" name="firstname").form-control#firstname
+                    .form-group
+                        label(for="lastname").control-label.col-sm-2 Last name:
+                        .col-sm-10
+                            input(type="text" name="lastname").form-control#lastname
+                    .form-group
+                        label(for="username").control-label.col-sm-2 Username:
+                        .col-sm-10
+                            input(type="text" name="username").form-control#username
+                    .form-group
+                        label(for="password").control-label.col-sm-2 Password:
+                        .col-sm-10
+                            input(type="password" name="password").form-control#password
+                    .text-center
+                        button(type="submit").btn.btn-default Save
