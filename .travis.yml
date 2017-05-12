@@ -20,7 +20,7 @@ deploy:
     bucket: "polaris.paladin.deploy"
     region: us-east-2
     on:
-      branch: master
+      tags: true
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
@@ -31,7 +31,7 @@ deploy:
     deployment_group: Paladin-Production
     region: us-east-2
     on:
-      branch: master
+      tags: true
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
