@@ -60,19 +60,6 @@ router.post('/profile', isAuthenticated, function(req, res, next) {
     res.redirect('/profile');
 });
 
-router.get('/users/create', isAuthenticated, function(req, res, next) {
-    return res.render('users/create', { title : 'Create' });
-});
-
-router.post('/users/create', function(req, res, next) {
-    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }), req.body.password, function(err, account) {
-        if (err) {
-            return res.redirect('/users/create');
-        }
-        res.redirect('/users/users');
-    });
-});
-
 router.get('/users/users', isAuthenticated, function(req, res, next) {
     Account.find({}, function(err, users) {
         return res.render('users/users', { title : 'Users', users: users });
@@ -84,6 +71,23 @@ router.get('/test', isAuthenticated, function(req, res, next) {
 })
 
 // API
+router.post('/users/create', function(req, res, next) {
+    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }), req.body.password, function(err, account) {
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 500,
+                "message" : err
+            });
+        }
+        res.json({
+            "status" : "success",
+            "code" : 200,
+            "message" : "User created successfully"
+        });
+    });
+});
+
 router.post("/users/delete/:id", isAuthenticated, function(req, res, next) {
     Account.remove({ _id : req.params.id }, function(err) {
         if (err) {
