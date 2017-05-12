@@ -2,6 +2,6 @@ extends layout
 
 append body
     .container
-        h1 Uh oh! An error occurred :(
+        h1 Aww! An error occurred: #{error.status} :(
         h4 Please copy and paste the below text and send it to us. Thanks!
         pre= 'Error code: ' + error.status + '\n' + error.stack
