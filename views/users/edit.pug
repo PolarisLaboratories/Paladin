@@ -6,7 +6,6 @@ append head
             var element = document.getElementById("#{user.role}");
             element.setAttribute("selected", "");
         }
-    script(src="/javascripts/form.js")
 
 append body
     .container
@@ -41,10 +40,9 @@ append body
                                 option#Student Student
                     .text-center
                         button(type="submit").btn.btn-default Save
-                form(method="post" action="/users/password/" + user._id data-alert='#password-alert').form-horizontal
+                form(method="post" action="/users/password/" + user._id).form-horizontal
                     hr
                     h3 Security
-                    .alert#password-alert(role="alert" hidden)
                     .form-group
                         label(for="password").control-label.col-sm-2 Password:
                         .col-sm-10

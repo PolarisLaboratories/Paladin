@@ -1,8 +1,5 @@
 extends layout
 
-append head
-    script(src="/javascripts/form.js")
-
 append body
     .container
         .panel.panel-default
@@ -32,10 +29,9 @@ append body
                             input(type="text" name="username" value=user.username).form-control#username
                     .text-center
                         button(type="submit").btn.btn-default Save
-                form(method="post" action="/users/password/" + user._id data-alert='#password-alert').form-horizontal
+                form(method="post" action="/users/password/" + user._id).form-horizontal
                     hr
                     h3 Security
-                    .alert#password-alert(role="alert" hidden)
                     .form-group
                         label(for="password").control-label.col-sm-2 Password:
                         .col-sm-10
