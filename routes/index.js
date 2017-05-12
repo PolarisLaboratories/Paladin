@@ -208,7 +208,7 @@ router.get('/users/list', function(req, res, next) {
 });
 
 router.get('/users/user/:id', function(req, res, next) {
-    if (!req.user || !req.user._id != req.params.id) {
+    if (!req.user) {
         return res.json({
             "status" : "error",
             "code" : 401,
