@@ -1,9 +1,10 @@
 function generateTable() {
     $.getJSON("/users/list", function(data) {
+        var users = JSON.parse(data.data);
         // Reset the table
         $("#user-table").find("tbody").remove();
         $("#user-table").append('<tbody>');
-        $.each(data, function(i, user) {
+        $.each(users, function(i, user) {
             $('<tr>').append(
                 $('<td>').text(user._id),
                 $('<td>').text(user.username),
@@ -14,7 +15,7 @@ function generateTable() {
             ).appendTo('#user-table');
         });
         $("#user-table").append('</tbody>');
-        $("#num-users").html('<strong>' + data.length + '</strong> users in the database');
+        $("#num-users").html('<strong>' + users.length + '</strong> users in the database');
     });
 }
 

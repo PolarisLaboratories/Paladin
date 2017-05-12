@@ -1,10 +1,11 @@
 function populateForm(id) {
     $.getJSON("/users/user/" + id, function(data) {
-        $("#firstname").val(data.firstname);
-        $("#lastname").val(data.lastname);
-        $("#username").val(data.username);
-        $("#role").val(data.role);
-        $("#user-form").attr("action", data._id);
+        var user = JSON.parse(data.data);
+        $("#firstname").val(user.firstname);
+        $("#lastname").val(user.lastname);
+        $("#username").val(user.username);
+        $("#role").val(user.role);
+        $("#user-form").attr("action", user._id);
     });
 }
 

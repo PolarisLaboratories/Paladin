@@ -165,14 +165,52 @@ router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
 });
 
 router.get('/users/list', isAuthenticated, function(req, res, next) {
+    if (!req.user) {
+        return res.json({
+            "status" : "error",
+            "code" : 401,
+            "message" : "You do not have permission to list this user."
+        });
+    }
     Account.find().lean().exec(function(err, users) {
-        return res.end(JSON.stringify(users));
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 500,
+                "message" : err
+            });
+        }
+        return res.json({
+            "status" : "success",
+            "code" : 200,
+            "message" : "User list retrieved successfully",
+            "data" : JSON.stringify(users)
+        });
     });
 });
 
-router.get('/users/user/:id', isAuthenticated, function(req, res, next) {
+router.get('/users/user/:id', function(req, res, next) {
+    if (!req.user) {
+        return res.json({
+            "status" : "error",
+            "code" : 401,
+            "message" : "You do not have permission to list this user."
+        });
+    }
     Account.findOne({ _id: req.params.id }).lean().exec(function(err, user) {
-        return res.end(JSON.stringify(user));
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 500,
+                "message" : err
+            });
+        }
+        return res.json({
+            "status" : "success",
+            "code" : 200,
+            "message" : "User listing retrieved",
+            "data" : JSON.stringify(user),
+        });
     });
 });
 
