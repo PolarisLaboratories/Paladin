@@ -1,0 +1,15 @@
+extends layout
+
+append head
+    script(src="/javascripts/form.js")
+
+append body
+    .container
+        form(method="post" action="/users/password/" + user._id data-alert="#password-alert").form-horizontal
+            .alert#password-alert(role="alert" hidden)
+            .form-group
+                label(for="password").control-label.col-sm-2 Password:
+                .col-sm-10
+                    input(type="password" name="password").form-control#password
+            .text-center
+                button(type="submit").btn.btn-default Change Password
