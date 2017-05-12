@@ -4,23 +4,27 @@ append head
     script(type='text/javascript').
         window.onload = function() {
             $('#confirm-delete').on('show.bs.modal', function(e) {
-                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+                $(this).find('#delete-ok').attr('href', $(e.relatedTarget).data('href'));
             });
         };
+        var users = !{JSON.stringify(users)};
+    script(src='/javascripts/users.js')
+    script(src='/javascripts/form.js')
 
 append body
     .container
+        .alert#users-alert(role="alert" hidden)
         .panel.panel-default
             .panel-heading
                 h3.panel-title Users
             div(style="margin: 10px")
                 .col-md-6
-                    p #[strong #{users.length}] users in the database
+                    p#num-users #[strong #{users.length}] users in the database
                 .col-md-6.text-right
                     a.btn.btn-success(role='button' href='/users/create')
                         span.glyphicon.glyphicon-plus
                         |  Add user
-            table.table.table-bordered.table-hover
+            table.table.table-bordered.table-hover#user-table
                 thead
                     th ID
                     th Username
@@ -28,17 +32,6 @@ append body
                     th Last Name
                     th Roles
                     th Manage
-                each user in users
-                    tr
-                        td= user.id
-                        td= user.username
-                        td= user.firstname
-                        td= user.lastname
-                        td= user.role
-                        td
-                            .btn-toolbar
-                                a.btn.btn-primary(role='button' href='/users/edit/' + user._id) Edit
-                                button.btn.btn-danger(type='button' data-href='/users/delete/' + user._id data-toggle="modal" data-target='#confirm-delete') Delete
         #confirm-delete.modal.fade(role='dialog')
             .modal-dialog
                 .modal-content
@@ -49,4 +42,4 @@ append body
                         p Are you sure you want to delete this user? This action is irreversible.
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Cancel
-                        a.btn.btn-danger.btn-ok Delete
+                        a.btn.btn-danger.btn-ok#delete-ok Delete

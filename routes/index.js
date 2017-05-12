@@ -97,17 +97,28 @@ router.get('/users/users', isAuthenticated, function(req, res, next) {
     });
 });
 
-router.get("/users/delete/:id", isAuthenticated, function(req, res, next) {
-    Account.remove({ _id : req.params.id }, function(err) {
-        res.redirect('/users/users');
-    });
-});
-
 router.get('/test', isAuthenticated, function(req, res, next) {
     return res.render('test', { title : 'Test', user: req.user });
 })
 
 // API
+router.post("/users/delete/:id", isAuthenticated, function(req, res, next) {
+    Account.remove({ _id : req.params.id }, function(err) {
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 500,
+                "message" : err
+            });
+        }
+        return res.json({
+            "status" : "success",
+            "code" : 200,
+            "message" : "User deleted successfully"
+        })
+    });
+});
+
 router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
     if (req.user._id != req.params.id && req.user.role != "Administrator") {
         return res.json({
@@ -147,6 +158,12 @@ router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
         "status" : "success",
         "code" : 200,
         "message" : "Password updated successfully"
+    });
+});
+
+router.get('/users/list', isAuthenticated, function(req, res, next) {
+    Account.find().lean().exec(function(err, users) {
+        return res.end(JSON.stringify(users));
     });
 });
 
