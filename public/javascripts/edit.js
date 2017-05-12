@@ -1,11 +1,15 @@
 function populateForm(id) {
     $.getJSON("/users/user/" + id, function(data) {
-        var user = JSON.parse(data.data);
-        $("#firstname").val(user.firstname);
-        $("#lastname").val(user.lastname);
-        $("#username").val(user.username);
-        $("#role").val(user.role);
-        $("#user-form").attr("action", user._id);
+        if (data.status == "success") {
+            var user = JSON.parse(data.data);
+            $("#firstname").val(user.firstname);
+            $("#lastname").val(user.lastname);
+            $("#username").val(user.username);
+            $("#role").val(user.role);
+            $("#user-form").attr("action", user._id);
+        } else {
+            $("#user-alert").addClass("alert-danger").show().text(data.message);
+        }
     });
 }
 
