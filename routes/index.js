@@ -61,34 +61,16 @@ router.post('/profile', isAuthenticated, function(req, res, next) {
 });
 
 router.get('/users/create', isAuthenticated, function(req, res, next) {
-    return res.render('users/create', { title : 'Create', message : req.flash('status') });
+    return res.render('users/create', { title : 'Create' });
 });
 
 router.post('/users/create', function(req, res, next) {
     Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }), req.body.password, function(err, account) {
         if (err) {
-            req.flash('status', 'An error occurred while creating the user.');
-            return res.redirect('users/create');
+            return res.redirect('/users/create');
         }
-        req.flash('status', 'User ' + req.body.username + ' created');
-        res.redirect('/users/create');
+        res.redirect('/users/users');
     });
-});
-
-router.get('/users/edit/:id', isAuthenticated, function(req, res, next) {
-    Account.findOne({ _id: req.params.id }, function(err, user) {
-        res.render('users/edit', { title: 'Edit', user: user, message: req.flash('status') });
-    })
-});
-
-router.post('/users/edit/:id', isAuthenticated, function(req, res, next) {
-    Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
-        if (err) {
-            console.log("Error saving details");
-        }
-    });
-    req.flash('status', 'Profile details updated');
-    res.redirect('/users/edit/' + req.params.id);
 });
 
 router.get('/users/users', isAuthenticated, function(req, res, next) {
@@ -117,6 +99,23 @@ router.post("/users/delete/:id", isAuthenticated, function(req, res, next) {
             "message" : "User deleted successfully"
         })
     });
+});
+
+router.post('/users/update/:id', isAuthenticated, function(req, res, next) {
+    Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 500,
+                "message" : err
+            });
+        }
+    });
+    res.json({
+        "status" : "success",
+        "code" : 200,
+        "message" : "User information updated successfully"
+    })
 });
 
 router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
@@ -164,6 +163,12 @@ router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
 router.get('/users/list', isAuthenticated, function(req, res, next) {
     Account.find().lean().exec(function(err, users) {
         return res.end(JSON.stringify(users));
+    });
+});
+
+router.get('/users/user/:id', isAuthenticated, function(req, res, next) {
+    Account.findOne({ _id: req.params.id }).lean().exec(function(err, user) {
+        return res.end(JSON.stringify(user));
     });
 });
 

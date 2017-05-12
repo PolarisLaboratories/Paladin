@@ -18,6 +18,8 @@ $(function() {
                 $(alert).removeAttr("hidden").text(data.message);
                 // Only clear password fields in this form
                 $(form).find("input[type='password']").val('');
+                // Reset modals
+                $(".modal").modal('toggle');
             }
         });
         event.preventDefault();

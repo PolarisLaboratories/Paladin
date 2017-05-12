@@ -9,7 +9,7 @@ append head
         };
         var users = !{JSON.stringify(users)};
     script(src='/javascripts/users.js')
-    script(src='/javascripts/form.js')
+    script(src='/javascripts/edit.js')
 
 append body
     .container
@@ -43,3 +43,46 @@ append body
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Cancel
                         a.btn.btn-danger.btn-ok#delete-ok Delete
+        #edit-user.modal.fade(role='dialog')
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal') ×
+                        h4.modal-title Edit User
+                    .modal-body
+                        .alert#user-alert(role="alert" hidden)
+                        form.form-horizontal#user-form(method="post")
+                            h3 Personal details
+                            .form-group
+                                label(for="firstname").control-label.col-sm-2 First name:
+                                .col-sm-10
+                                    input(type="text" name="firstname").form-control#firstname
+                            .form-group
+                                label(for="lastname").control-label.col-sm-2 Last name:
+                                .col-sm-10
+                                    input(type="text" name="lastname").form-control#lastname
+                            hr
+                            h3 Account details
+                            .form-group
+                                label(for="username").control-label.col-sm-2 Username:
+                                .col-sm-10
+                                    input(type="text" name="username").form-control#username
+                            .form-group
+                                label(for="role").control-label.col-sm-2 Role:
+                                .col-sm-10
+                                    select.form-control#role(name="role")
+                                        option#Administrator Administrator
+                                        option#Teacher Teacher
+                                        option#Student Student
+                            .text-center
+                                button(type="submit").btn.btn-default Save
+                        form.form-horizontal#password-form(method="post")
+                            hr
+                            h3 Security
+                            .alert#password-alert(role="alert" hidden)
+                            .form-group
+                                label(for="password").control-label.col-sm-2 Password:
+                                .col-sm-10
+                                    input(type="password" name="password").form-control#password
+                            .text-center
+                                button(type="submit").btn.btn-default Change Password

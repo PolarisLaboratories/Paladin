@@ -10,7 +10,7 @@ function generateTable() {
                 $('<td>').text(user.firstname),
                 $('<td>').text(user.lastname),
                 $('<td>').text(user.role),
-                $('<td>').html('<div class="btn-toolbar"><a class="btn btn-primary" role="button" href="/users/edit/' + user._id + '">Edit</a><button class="btn btn-danger" type="button" data-href="/users/delete/' + user._id + '" data-toggle="modal" data-target="#confirm-delete">Delete</button></div>')
+                $('<td>').html('<div class="btn-toolbar"><button class="btn btn-primary" type="button" data-id="' + user._id + '" data-toggle="modal" data-target="#edit-user">Edit</a><button class="btn btn-danger" type="button" data-href="/users/delete/' + user._id + '" data-toggle="modal" data-target="#confirm-delete">Delete</button></div>')
             ).appendTo('#user-table');
         });
         $("#user-table").append('</tbody>');
