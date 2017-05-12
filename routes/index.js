@@ -48,10 +48,7 @@ router.get('/profile', isAuthenticated, function(req, res, next) {
 });
 
 router.post('/profile', isAuthenticated, function(req, res, next) {
-    let username = (req.body.username == "") ? req.user.username : req.body.username;
-    let firstname = (req.body.firstname == "") ? req.user.firstname : req.body.firstname;
-    let lastname = (req.body.lastname == "") ? req.user.lastname : req.body.lastname;
-    Account.update({ _id : req.user.id }, { username : username, firstname: firstname, lastname: lastname }, function (err, numberAffected, rawResponse) {
+    Account.update({ _id : req.user.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname }, function (err, numberAffected, rawResponse) {
         if (err) {
             console.log("Error saving details");
         }
@@ -62,7 +59,7 @@ router.post('/profile', isAuthenticated, function(req, res, next) {
 
 router.get('/users/users', isAuthenticated, function(req, res, next) {
     Account.find({}, function(err, users) {
-        return res.render('users/users', { title : 'Users', users: users });
+        return res.render('users/users', { title : 'Users' });
     });
 });
 
@@ -72,6 +69,13 @@ router.get('/test', isAuthenticated, function(req, res, next) {
 
 // API
 router.post('/users/create', function(req, res, next) {
+    if (!req.user) {
+        return res.json({
+            "status" : "error",
+            "code" : 401,
+            "message" : "You do not have permission for this action"
+        });
+    }
     Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }), req.body.password, function(err, account) {
         if (err) {
             return res.json({
@@ -88,7 +92,14 @@ router.post('/users/create', function(req, res, next) {
     });
 });
 
-router.post("/users/delete/:id", isAuthenticated, function(req, res, next) {
+router.post("/users/delete/:id", function(req, res, next) {
+    if (!req.user || req.user._id != req.params.id) {
+        return res.json({
+            "status" : "error",
+            "code" : 401,
+            "message" : "You do not have permission for this action"
+        });
+    }
     Account.remove({ _id : req.params.id }, function(err) {
         if (err) {
             return res.json({
@@ -105,7 +116,14 @@ router.post("/users/delete/:id", isAuthenticated, function(req, res, next) {
     });
 });
 
-router.post('/users/update/:id', isAuthenticated, function(req, res, next) {
+router.post('/users/update/:id', function(req, res, next) {
+    if (!req.user || req.user._id != req.params.id) {
+        return res.json({
+            "status" : "error",
+            "code" : 401,
+            "message" : "You do not have permission for this action"
+        });
+    }
     Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
         if (err) {
             return res.json({
@@ -122,8 +140,8 @@ router.post('/users/update/:id', isAuthenticated, function(req, res, next) {
     })
 });
 
-router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
-    if (req.user._id != req.params.id && req.user.role != "Administrator") {
+router.post('/users/password/:id', function(req, res, next) {
+    if (!req.user || req.user._id != req.params.id) {
         return res.json({
             "status" : "error",
             "code" : 401,
@@ -164,12 +182,12 @@ router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
     });
 });
 
-router.get('/users/list', isAuthenticated, function(req, res, next) {
+router.get('/users/list', function(req, res, next) {
     if (!req.user) {
         return res.json({
             "status" : "error",
             "code" : 401,
-            "message" : "You do not have permission to list this user."
+            "message" : "You do not have permission to perform this action"
         });
     }
     Account.find().lean().exec(function(err, users) {
@@ -190,11 +208,11 @@ router.get('/users/list', isAuthenticated, function(req, res, next) {
 });
 
 router.get('/users/user/:id', function(req, res, next) {
-    if (!req.user) {
+    if (!req.user || !req.user._id != req.params.id) {
         return res.json({
             "status" : "error",
             "code" : 401,
-            "message" : "You do not have permission to list this user."
+            "message" : "You do not have permission to perform this action"
         });
     }
     Account.findOne({ _id: req.params.id }).lean().exec(function(err, user) {
