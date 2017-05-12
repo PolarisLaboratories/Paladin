@@ -91,33 +91,6 @@ router.post('/users/edit/:id', isAuthenticated, function(req, res, next) {
     res.redirect('/users/edit/' + req.params.id);
 });
 
-router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
-    if (req.user._id != req.params.id && req.user.role != "Administrator") {
-        req.flash('status', 'You do not have permission for this action');
-        return res.redirect('/users/edit/' + req.params.id);
-    }
-    Account.findOne({ _id: req.params.id }, function(err, user) {
-        if (err) {
-            req.flash('status', 'An error occurred: ' + err);
-            return res.redirect('/users/edit/' + req.params.id);
-        }
-        user.setPassword(req.body.password, function(err) {
-            if (err) {
-                req.flash('status', 'An error occurred: ' + err);
-                return res.redirect('/users/edit/' + req.params.id);
-            }
-            user.save(function(err) {
-                if (err) {
-                    req.flash('status', 'An error occurred: ' + err);
-                    return res.redirect('/users/edit/' + req.params.id);
-                }
-            });
-        });
-    });
-    req.flash('status', 'Password updated');
-    return res.redirect('/users/edit/' + req.params.id);
-});
-
 router.get('/users/users', isAuthenticated, function(req, res, next) {
     Account.find({}, function(err, users) {
         return res.render('users/users', { title : 'Users', users: users });
@@ -127,6 +100,53 @@ router.get('/users/users', isAuthenticated, function(req, res, next) {
 router.get("/users/delete/:id", isAuthenticated, function(req, res, next) {
     Account.remove({ _id : req.params.id }, function(err) {
         res.redirect('/users/users');
+    });
+});
+
+router.get('/test', isAuthenticated, function(req, res, next) {
+    return res.render('test', { title : 'Test', user: req.user });
+})
+
+// API
+router.post('/users/password/:id', isAuthenticated, function(req, res, next) {
+    if (req.user._id != req.params.id && req.user.role != "Administrator") {
+        return res.json({
+            "status" : "error",
+            "code" : 401,
+            "message" : "You do not have permission for this action"
+        });
+    }
+    Account.findOne({ _id: req.params.id }, function(err, user) {
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 404,
+                "message" : "Requested user not found in database"
+            });
+        }
+        user.setPassword(req.body.password, function(err) {
+            if (err) {
+                return res.json({
+                    "status" : "error",
+                    "code" : 500,
+                    "message" : "An error occurred while setting the password"
+                });
+            }
+            user.save(function(err) {
+                if (err) {
+                    return res.json({
+                        "status" : "error",
+                        "code" : 500,
+                        "message" : "An error occurred while saving the password"
+                    });
+                }
+            });
+        });
+    });
+    return res.json({
+        "status" : "success",
+        "code" : 200,
+        "message" : "Password updated successfully"
     });
 });
 
