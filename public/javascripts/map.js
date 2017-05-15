@@ -89,6 +89,15 @@ function raw(response) {
     banner("alert-info", response.data, 2000);
 }
 
+function drawCircle(x, y, size) {
+    console.log('Drawing circle at', x, y, size);
+    g.append("circle")
+        .attr('class', 'click-circle')
+        .attr("cx", x)
+        .attr("cy", y)
+        .attr("r", size);
+}
+
 function setup(response) {
     config = response;
 
@@ -110,6 +119,12 @@ function setup(response) {
         $("link[href='stylesheets/loading.css']").remove();
         $("div.loading").remove();
     }
+
+    g.on('click', function() {
+        var coords = d3.mouse(this);
+        console.log(coords);
+        drawCircle(coords[0], coords[1], 5);
+    });
 }
 
 // User interface stuff
