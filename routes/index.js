@@ -92,8 +92,8 @@ router.post('/users/create', function(req, res, next) {
     });
 });
 
-router.post("/users/delete/:id", function(req, res, next) {
-    if (!req.user || req.user._id != req.params.id) {
+router.delete("/users/user/:id", function(req, res, next) {
+    if (!req.user || (req.user._id != req.params.id && req.user.role != "Administrator")) {
         return res.json({
             "status" : "error",
             "code" : 401,
@@ -116,7 +116,7 @@ router.post("/users/delete/:id", function(req, res, next) {
     });
 });
 
-router.post('/users/update/:id', function(req, res, next) {
+router.post('/users/user/:id', function(req, res, next) {
     if (!req.user || req.user._id != req.params.id) {
         return res.json({
             "status" : "error",

@@ -18,7 +18,7 @@ function submitUserForm() {
     var alert = $("#user-alert");
     $.ajax({
         type: $(form).attr('method'),
-        url: '/users/update/' + $("#user-form").attr("action"),
+        url: '/users/user/' + $("#user-form").attr("action"),
         data: $(form).serialize(),
 
         success: function(data, status) {
