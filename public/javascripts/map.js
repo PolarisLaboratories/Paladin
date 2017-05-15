@@ -10,7 +10,7 @@ var svg;
 var zoom;
 var g;
 
-var room = false;
+var roomEditEnabled = false;
 
 // Alert functions
 function banner(type, message, delay) {
@@ -93,12 +93,11 @@ function raw(response) {
 }
 
 function drawCircle(x, y, size) {
-    console.log('Drawing circle at', x, y, size);
-    g.append("circle")
-        .attr('class', 'circle')
-        .attr("cx", x)
-        .attr("cy", y)
-        .attr("r", size);
+    return svg.append("circle")
+              .attr('class', 'circle')
+              .attr("cx", x)
+              .attr("cy", y)
+              .attr("r", size)
 }
 
 function setup(response) {
@@ -127,13 +126,20 @@ function setup(response) {
 function rooms(response) {
     $(".circle").remove();
     for (var room of response.data) {
-        drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5);
+        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5);
+        circle.attr("data-name", room.name);
     }
+    if (roomEditEnabled === false) {
+        svg.selectAll("circle")
+           .attr("visibility", "hidden");
+   }
 }
 
 // User interface stuff
 function zoomed () {
     g.attr("transform", d3.event.transform);
+    svg.selectAll("circle")
+       .attr("transform", d3.event.transform);
 }
 
 function zoom_reset() {
@@ -155,6 +161,10 @@ function zoom_out() {
 }
 
 function room_click() {
+    $('#create-room').on('show.bs.modal', function(e) {
+        $(this).removeClass("fade");
+    });
+    $("#create-room").modal("toggle");
     var coords = d3.mouse(this);
     /*
      * Why do we subtract 0.5 * width and 0.5 * height? Note that the
@@ -167,27 +177,40 @@ function room_click() {
      */
     var x = coords[0] - (0.5 * width);
     var y = coords[1] - (0.5 * height);
+    drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
+    $('#create-room-form').on('submit', function(e) {
+        event.preventDefault();
+        dispatch_room($("#roomname").val(), x, y);
+        $("#create-room").modal("toggle");
+        $("#roomname").val("");
+    });
+}
+
+function dispatch_room(name, x, y) {
     var point = {
         'type': 'point',
         'data': {
-            'name': 'DSA',
+            'name': name,
             'x': x,
             'y': y
         }
     };
     ws.send(JSON.stringify(point));
-    drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
 }
 
 function toggle_rooms() {
-    if (!room) {
+    if (roomEditEnabled === false) {
         g.on("click", room_click);
         $('body').prepend('<div id="alert-container" style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert alert-info text-center"><b>Room Editing Mode</b><br>Click on the button again to exit</div></div>');
+        svg.selectAll("circle")
+           .attr("visibility", "visible");
     } else {
         g.on("click", function() {
 
         });
         $("#alert-container").remove();
+        svg.selectAll("circle")
+           .attr("visibility", "hidden");
     }
-    room = !room;
+    roomEditEnabled = !roomEditEnabled;
 }

@@ -45,3 +45,17 @@ block body
     //- We insert the svg here instead of doing it with d3 because it's easier
     //- to set CSS from here
     svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
+    #create-room.modal.fade(role='dialog')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title Create Room
+                .modal-body
+                    form.form-horizontal#create-room-form()
+                        .form-group
+                            label(for="roomname").control-label.col-sm-2 Room name:
+                            .col-sm-10
+                                input(type="text" name="roomname").form-control#roomname
+                        .text-center
+                            button(type="submit").btn.btn-default Create
