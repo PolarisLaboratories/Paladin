@@ -1,5 +1,5 @@
 var hostname = window.location.hostname;
-var wsaddr = "wss://".concat(hostname, "/api");
+var wsaddr = "wss://".concat(hostname, "/map/wss");
 var ws;
 
 var config;
@@ -56,6 +56,7 @@ $(document).ready(function() {
 var functions = {
     'config': setup,
     'raw': raw,
+    'rooms': rooms,
 };
 
 function connect() {
@@ -92,7 +93,7 @@ function raw(response) {
 function drawCircle(x, y, size) {
     console.log('Drawing circle at', x, y, size);
     g.append("circle")
-        .attr('class', 'click-circle')
+        .attr('class', 'circle')
         .attr("cx", x)
         .attr("cy", y)
         .attr("r", size);
@@ -122,9 +123,24 @@ function setup(response) {
 
     g.on('click', function() {
         var coords = d3.mouse(this);
-        console.log(coords);
+        var point = {
+            'type': 'point',
+            'data': {
+                'name': 'DSA',
+                'x': coords[0],
+                'y': coords[1]
+            }
+        };
+        ws.send(JSON.stringify(point));
         drawCircle(coords[0], coords[1], 5);
     });
+}
+
+function rooms(response) {
+    $(".circle").remove();
+    for (var room of response.data) {
+        drawCircle(room.x, room.y, 5);
+    }
 }
 
 // User interface stuff
