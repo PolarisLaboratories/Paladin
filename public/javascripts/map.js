@@ -119,27 +119,38 @@ function setup(response) {
         // Remove the CSS loading element since the map is technically loaded
         $("link[href='stylesheets/loading.css']").remove();
         $("div.loading").remove();
-    }
 
-    g.on('click', function() {
-        var coords = d3.mouse(this);
-        var point = {
-            'type': 'point',
-            'data': {
-                'name': 'DSA',
-                'x': coords[0],
-                'y': coords[1]
-            }
-        };
-        ws.send(JSON.stringify(point));
-        drawCircle(coords[0], coords[1], 5);
-    });
+        g.on('click', function() {
+            var coords = d3.mouse(this);
+            /*
+             * Why do we subtract 0.5 * width and 0.5 * height? Note that the
+             * image above has 50% for the x and y attributes, which is
+             * necessary to ensure that the image is properly centered in
+             * the g element. Thus, the value we get as the mouse click location
+             * is off by 0.5 * the dimensions of the screen size. The value
+             * we send to the server is this "compensated" value, but when
+             * we render the dots, we add the offset for the screen size.
+             */
+            var x = coords[0] - (0.5 * width);
+            var y = coords[1] - (0.5 * height);
+            var point = {
+                'type': 'point',
+                'data': {
+                    'name': 'DSA',
+                    'x': x,
+                    'y': y
+                }
+            };
+            ws.send(JSON.stringify(point));
+            drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
+        });
+    }
 }
 
 function rooms(response) {
     $(".circle").remove();
     for (var room of response.data) {
-        drawCircle(room.x, room.y, 5);
+        drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5);
     }
 }
 
