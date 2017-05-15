@@ -10,6 +10,8 @@ var svg;
 var zoom;
 var g;
 
+var room = false;
+
 // Alert functions
 function banner(type, message, delay) {
     $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert ' + type + ' show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
@@ -119,31 +121,6 @@ function setup(response) {
         // Remove the CSS loading element since the map is technically loaded
         $("link[href='stylesheets/loading.css']").remove();
         $("div.loading").remove();
-
-        g.on('click', function() {
-            var coords = d3.mouse(this);
-            /*
-             * Why do we subtract 0.5 * width and 0.5 * height? Note that the
-             * image above has 50% for the x and y attributes, which is
-             * necessary to ensure that the image is properly centered in
-             * the g element. Thus, the value we get as the mouse click location
-             * is off by 0.5 * the dimensions of the screen size. The value
-             * we send to the server is this "compensated" value, but when
-             * we render the dots, we add the offset for the screen size.
-             */
-            var x = coords[0] - (0.5 * width);
-            var y = coords[1] - (0.5 * height);
-            var point = {
-                'type': 'point',
-                'data': {
-                    'name': 'DSA',
-                    'x': x,
-                    'y': y
-                }
-            };
-            ws.send(JSON.stringify(point));
-            drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
-        });
     }
 }
 
@@ -175,4 +152,42 @@ function zoom_out() {
     svg.transition()
        .duration(750)
        .call(zoom.scaleBy, 0.5);
+}
+
+function room_click() {
+    var coords = d3.mouse(this);
+    /*
+     * Why do we subtract 0.5 * width and 0.5 * height? Note that the
+     * image above has 50% for the x and y attributes, which is
+     * necessary to ensure that the image is properly centered in
+     * the g element. Thus, the value we get as the mouse click location
+     * is off by 0.5 * the dimensions of the screen size. The value
+     * we send to the server is this "compensated" value, but when
+     * we render the dots, we add the offset for the screen size.
+     */
+    var x = coords[0] - (0.5 * width);
+    var y = coords[1] - (0.5 * height);
+    var point = {
+        'type': 'point',
+        'data': {
+            'name': 'DSA',
+            'x': x,
+            'y': y
+        }
+    };
+    ws.send(JSON.stringify(point));
+    drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
+}
+
+function toggle_rooms() {
+    if (!room) {
+        g.on("click", room_click);
+        $('body').prepend('<div id="alert-container" style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert alert-info text-center"><b>Room Editing Mode</b><br>Click on the button again to exit</div></div>');
+    } else {
+        g.on("click", function() {
+
+        });
+        $("#alert-container").remove();
+    }
+    room = !room;
 }

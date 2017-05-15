@@ -39,6 +39,9 @@ block body
             span(class="glyphicon glyphicon-picture")
         button(class="btn" id="zoom-out" data-toggle="tooltip" title="Zoom out")
             span(class="glyphicon glyphicon-zoom-out")
+    div(id="admin-bar" class="btn-group-vertical")
+        button(class="btn" id="edit-rooms" data-toggle="tooltip" title="Edit rooms" onclick="toggle_rooms()")
+            span(class="glyphicon glyphicon-plus")
     //- We insert the svg here instead of doing it with d3 because it's easier
     //- to set CSS from here
     svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
