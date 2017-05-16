@@ -188,6 +188,9 @@ function room_click() {
         event.preventDefault();
         $('#create-room-form').off('submit');
         dispatch_room($("#roomname").val(), x, y);
+        $('#create-room').on('hide.bs.modal', function(e) {
+            $(this).removeClass("fade");
+        });
         $("#create-room").modal("toggle");
         $("#roomname").val("");
     });
