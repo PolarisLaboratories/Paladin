@@ -93,6 +93,7 @@ function raw(response) {
 }
 
 function drawCircle(x, y, size, name, id) {
+    var transform = g.attr('transform');
     var circle = svg.append("circle")
               .attr('class', 'circle')
               .attr("cx", x)
@@ -100,6 +101,7 @@ function drawCircle(x, y, size, name, id) {
               .attr("r", size)
               .attr('data-name', name)
               .attr('data-id', id)
+              .attr('transform', transform)
               .on("mouseover", room_mouseover)
               .on("mouseout", room_mouseout)
               .on("click", room_select);
@@ -107,6 +109,7 @@ function drawCircle(x, y, size, name, id) {
        .attr('x', x - 30)
        .attr('y', y - 15)
        .attr('id', 'label-' + name)
+       .attr('transform', transform)
        .text(name);
     if (roomEditEnabled === false) {
         circle.attr("visibility", "hidden");
