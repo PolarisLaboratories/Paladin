@@ -173,9 +173,6 @@ function zoom_out() {
 }
 
 function room_click() {
-    $('#create-room').on('show.bs.modal', function(e) {
-        $(this).removeClass("fade");
-    });
     $("#create-room").modal("toggle");
     var coords = d3.mouse(this);
     /*
@@ -193,9 +190,6 @@ function room_click() {
         event.preventDefault();
         $('#create-room-form').off('submit');
         dispatch_room($("#roomname").val(), x, y);
-        $('#create-room').on('hide.bs.modal', function(e) {
-            $(this).removeClass("fade");
-        });
         $("#create-room").modal("toggle");
         $("#roomname").val("");
     });
