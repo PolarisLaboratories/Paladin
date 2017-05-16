@@ -100,7 +100,8 @@ function drawCircle(x, y, size, name) {
               .attr("r", size)
               .attr('data-name', name)
               .on("mouseover", room_mouseover)
-              .on("mouseout", room_mouseout);
+              .on("mouseout", room_mouseout)
+              .on("click", room_click);
     var text = svg.append("text")
        .attr('x', x - 30)
        .attr('y', y - 15)
@@ -242,4 +243,23 @@ function room_mouseout(d, i) {
            .attr('r', 5);
     var name = element.attr('data-name');
     $("#label-" + name).css("font-weight","");
+}
+
+function room_click(d, i) {
+    var element = d3.select(this);
+    var element = d3.select(this);
+    element.attr('fill', 'orange')
+        .attr('r', 10)
+    var x = element.attr('cx');
+    var y = element.attr('cy');
+    var name = element.attr('data-name');
+    $("#label-" + name).css("font-weight","Bold");
+    $("#welcome-container").hide();
+    $("#roomname-header").text(name);
+    $("#room-container").show();
+    $("g").on('click', function(e) {
+        $("#welcome-container").show();
+        $("#room-container").hide();
+        $("g").off('click');
+    });
 }
