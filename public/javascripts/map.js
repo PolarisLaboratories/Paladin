@@ -146,7 +146,7 @@ function rooms(response) {
 // User interface stuff
 function zoomed () {
     g.attr("transform", d3.event.transform);
-    svg.selectAll("circle").attr("transform", d3.event.transform);
+    svg.selectAll("circle, text").attr("transform", d3.event.transform);
 }
 
 function zoom_reset() {
