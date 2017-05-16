@@ -92,16 +92,17 @@ function raw(response) {
     banner("alert-info", response.data, 2000);
 }
 
-function drawCircle(x, y, size, name) {
+function drawCircle(x, y, size, name, id) {
     var circle = svg.append("circle")
               .attr('class', 'circle')
               .attr("cx", x)
               .attr("cy", y)
               .attr("r", size)
               .attr('data-name', name)
+              .attr('data-id', id)
               .on("mouseover", room_mouseover)
               .on("mouseout", room_mouseout)
-              .on("click", room_click);
+              .on("click", room_select);
     var text = svg.append("text")
        .attr('x', x - 30)
        .attr('y', y - 15)
@@ -138,9 +139,9 @@ function setup(response) {
 }
 
 function rooms(response) {
-    $(".circle").remove();
+    $(".circle, text").remove();
     for (var room of response.data) {
-        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5, room.name);
+        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5, room.name, room._id);
     }
 }
 
@@ -199,7 +200,7 @@ function room_click() {
 
 function dispatch_room(name, x, y) {
     var point = {
-        'type': 'point',
+        'type': 'room_create',
         'data': {
             'name': name,
             'x': x,
@@ -207,7 +208,7 @@ function dispatch_room(name, x, y) {
         }
     };
     ws.send(JSON.stringify(point));
-    drawCircle(x + (0.5 * width), y + (0.5 * height), 5, name);
+    drawCircle(x + (0.5 * width), y + (0.5 * height), 5, name, 0);
 }
 
 function toggle_rooms() {
@@ -245,7 +246,7 @@ function room_mouseout(d, i) {
     $("#label-" + name).css("font-weight","");
 }
 
-function room_click(d, i) {
+function room_select(d, i) {
     var element = d3.select(this);
     var element = d3.select(this);
     element.attr('fill', 'orange')
@@ -253,13 +254,31 @@ function room_click(d, i) {
     var x = element.attr('cx');
     var y = element.attr('cy');
     var name = element.attr('data-name');
+    var id = element.attr('data-id');
     $("#label-" + name).css("font-weight","Bold");
     $("#welcome-container").hide();
-    $("#roomname-header").text(name);
+    $("#roomname-edit").val(name);
     $("#room-container").show();
-    $("g").on('click', function(e) {
-        $("#welcome-container").show();
-        $("#room-container").hide();
-        $("g").off('click');
+    $("#roomname-form").on('submit', function(e) {
+        event.preventDefault();
+        $('#create-room-form').off('submit');
+        var request = {
+            'type': 'room_update',
+            'data' : {
+                'id': id,
+                'name' : $('#roomname-edit').val(),
+            }
+        }
+        ws.send(JSON.stringify(request));
+    });
+    $("#delete-room").on('click', function(e) {
+        var request = {
+            'type': 'room_delete',
+            'data': {
+                'id': id,
+            }
+        };
+        ws.send(JSON.stringify(request));
+        $("#roomname-edit").val('');
     });
 }

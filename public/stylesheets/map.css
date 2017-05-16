@@ -23,7 +23,7 @@ body {
     z-index: 5;
 }
 
-#container {
+.card {
     padding: 2px 16px;
 }
 
@@ -32,7 +32,7 @@ body {
     bottom: 2%;
     right: 2%;
     width: 30%;
-    height: 20%;
+    height: 25%;
     z-index: 5;
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);

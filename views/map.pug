@@ -60,8 +60,16 @@ block body
                         .text-center
                             button(type="submit").btn.btn-default Create
     #configure-card
-        #welcome-container.container
+        #welcome-container.card
             h4 Welcome!
             p Select a user (or room) to get started
-        #room-container.container(hidden)
-            h4#roomname-header Room
+        #room-container.card(hidden)
+            h4#roomname-header Room Details
+            form.form-horizontal#roomname-form
+                .form-group
+                    label(for="roomname").control-label.col-sm-2 Room name:
+                    .col-sm-10
+                        input(type="text" name="roomname" autocomplete="off").form-control#roomname-edit
+                .text-center
+                    button(type="submit").btn.btn-primary Save
+                    button.btn.btn-danger#delete-room Delete
