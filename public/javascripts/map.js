@@ -92,14 +92,23 @@ function raw(response) {
     banner("alert-info", response.data, 2000);
 }
 
-function drawCircle(x, y, size) {
-    var circle = g.append("circle")
+function drawCircle(x, y, size, name) {
+    var circle = svg.append("circle")
               .attr('class', 'circle')
               .attr("cx", x)
               .attr("cy", y)
               .attr("r", size)
+              .attr('data-name', name)
+              .on("mouseover", room_mouseover)
+              .on("mouseout", room_mouseout);
+    var text = svg.append("text")
+       .attr('x', x - 30)
+       .attr('y', y - 15)
+       .attr('id', 'label-' + name)
+       .text(name);
     if (roomEditEnabled === false) {
         circle.attr("visibility", "hidden");
+        text.attr("visibility", "hidden");
     }
     return circle;
 }
@@ -130,14 +139,14 @@ function setup(response) {
 function rooms(response) {
     $(".circle").remove();
     for (var room of response.data) {
-        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5);
-        circle.attr("data-name", room.name);
+        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5, room.name);
     }
 }
 
 // User interface stuff
 function zoomed () {
     g.attr("transform", d3.event.transform);
+    svg.selectAll("circle").attr("transform", d3.event.transform);
 }
 
 function zoom_reset() {
@@ -194,22 +203,40 @@ function dispatch_room(name, x, y) {
         }
     };
     ws.send(JSON.stringify(point));
-    drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
+    drawCircle(x + (0.5 * width), y + (0.5 * height), 5, name);
 }
 
 function toggle_rooms() {
     if (roomEditEnabled === false) {
         g.on("click", room_click);
         $('body').prepend('<div id="alert-container" style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert alert-info text-center"><b>Room Editing Mode</b><br>Click on the button again to exit</div></div>');
-        g.selectAll("circle")
+        svg.selectAll("circle, text")
            .attr("visibility", "visible");
     } else {
         g.on("click", function() {
 
         });
         $("#alert-container").remove();
-        g.selectAll("circle")
+        svg.selectAll("circle, text")
            .attr("visibility", "hidden");
     }
     roomEditEnabled = !roomEditEnabled;
+}
+
+function room_mouseover(d, i) {
+    var element = d3.select(this);
+    element.attr('fill', 'orange')
+        .attr('r', 10)
+    var x = element.attr('cx');
+    var y = element.attr('cy');
+    var name = element.attr('data-name');
+    $("#label-" + name).css("font-weight","Bold");
+}
+
+function room_mouseout(d, i) {
+    var element = d3.select(this);
+    element.attr('fill', 'black')
+           .attr('r', 5);
+    var name = element.attr('data-name');
+    $("#label-" + name).css("font-weight","");
 }
