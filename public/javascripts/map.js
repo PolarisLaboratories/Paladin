@@ -177,6 +177,7 @@ function room_click() {
     var y = coords[1] - (0.5 * height);
     $('#create-room-form').on('submit', function(e) {
         event.preventDefault();
+        $('#create-room-form').off('submit');
         dispatch_room($("#roomname").val(), x, y);
         $("#create-room").modal("toggle");
         $("#roomname").val("");
