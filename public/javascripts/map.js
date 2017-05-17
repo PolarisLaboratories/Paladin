@@ -79,7 +79,6 @@ $(document).ready(function() {
         });
     };
 
-
     connect();
 });
 
@@ -87,7 +86,7 @@ $(document).ready(function() {
 var functions = {
     'config': setup,
     'raw': raw,
-    'rooms': rooms,
+    'rooms': room_first_run,
     'users': users,
 };
 
@@ -143,6 +142,19 @@ function setup(response) {
         $("link[href='stylesheets/loading.css']").remove();
         $("div.loading").remove();
     }
+}
+
+// This is kind of a hack to prevent the users loading before the rooms are.
+function room_first_run(response) {
+    // Set the handler for future room updates to the real function
+    functions['rooms'] = rooms;
+    // Pass through to the real function
+    rooms(response);
+    // Send a request for users
+    var request = {
+        'type': 'user_request'
+    };
+    ws.send(JSON.stringify(request));
 }
 
 function rooms(response) {
