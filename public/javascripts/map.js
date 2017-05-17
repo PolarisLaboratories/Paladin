@@ -154,14 +154,15 @@ function users(response) {
         if (!room) {
             console.log("Invalid room specified for user");
         } else {
-            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 5, room.name, room._id);
+            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 2, room.name, room._id);
             circle.attr('data-name', user.name)
                   .attr('data-id', user._id)
                   .attr('class', 'user')
                   .attr('fill', 'red')
-            var text = drawText(circle.attr('cx') - 30, circle.attr('cy') - 15, user.firstname + ' ' + user.lastname);
+            var text = drawText(circle.attr('cx') - 15, circle.attr('cy') - 8, user.firstname + ' ' + user.lastname);
             text.attr('class', 'user-label')
                 .attr('fill', 'red')
+                .attr('font-size', '10')
         }
     }
 }
