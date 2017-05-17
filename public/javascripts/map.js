@@ -136,8 +136,9 @@ function rooms(response) {
               .on("mouseout", room_mouseout)
               .on("click", room_select);
         var text = drawText(room.x + (0.5 * width) - 30, room.y + (0.5 * height) - 15, room.name);
-        text.attr('id', 'label-' + room.name)
-            .attr('class', 'room-label');
+        text.attr('id', 'room-label-' + room.name)
+            .attr('class', 'room-label')
+            .attr('text-anchor', 'middle')
         if (roomEditEnabled === false) {
             circle.attr("visibility", "hidden");
             text.attr("visibility", "hidden");
@@ -155,13 +156,17 @@ function users(response) {
             console.log("Invalid room specified for user " + username + ". Room: " + user.location);
         } else {
             var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 3, room.name, room._id);
-            circle.attr('data-name', user.firstname + ' ' + user.lastname)
+            circle.attr('data-name', user.username)
                   .attr('class', 'user')
                   .attr('fill', 'red')
-            var text = drawText(circle.attr('cx') - 15, circle.attr('cy') - 8, user.firstname + ' ' + user.lastname);
+                  .on("mouseover", user_mouseover)
+                  .on("mouseout", user_mouseout)
+            var text = drawText(circle.attr('cx') - 15, circle.attr('cy') - 10, user.firstname + ' ' + user.lastname);
             text.attr('class', 'user-label')
+                .attr('id', 'user-label-' + user.username)
                 .attr('fill', 'red')
                 .attr('font-size', '10')
+                .attr('text-anchor', 'middle')
         }
     }
 }
@@ -266,20 +271,32 @@ function toggle_rooms() {
 
 function room_mouseover(d, i) {
     var element = d3.select(this);
-    element.attr('fill', 'orange')
-        .attr('r', 10)
+    element.transition()
+           .duration(500)
+           .attr('fill', 'blue')
+           .attr('r', 10);
     var x = element.attr('cx');
     var y = element.attr('cy');
     var name = element.attr('data-name');
-    $("#label-" + name).css("font-weight","Bold");
+    d3.select("#room-label-" + name)
+        .transition()
+        .duration(500)
+        .style("font-size", "18")
+        .attr("fill", "blue")
 }
 
 function room_mouseout(d, i) {
     var element = d3.select(this);
-    element.attr('fill', 'black')
+    element.transition()
+           .duration(500)
+           .attr('fill', 'black')
            .attr('r', 5);
     var name = element.attr('data-name');
-    $("#label-" + name).css("font-weight","");
+    d3.select("#room-label-" + name)
+        .transition()
+        .duration(500)
+        .style("font-size","14")
+        .attr("fill", "black")
 }
 
 function room_select(d, i) {
@@ -291,7 +308,7 @@ function room_select(d, i) {
     var y = element.attr('cy');
     var name = element.attr('data-name');
     var id = element.attr('data-id');
-    $("#label-" + name).css("font-weight","Bold");
+    $("#room-label-" + name).css("font-weight","Bold");
     $("#welcome-container").hide();
     $("#roomname-edit").val(name);
     $("#room-container").show();
@@ -317,4 +334,28 @@ function room_select(d, i) {
         ws.send(JSON.stringify(request));
         $("#roomname-edit").val('');
     });
+}
+
+function user_mouseover(d, i) {
+    var element = d3.select(this);
+    element.transition().duration(500).attr('r', 8)
+    var x = element.attr('cx');
+    var y = element.attr('cy');
+    var name = element.attr('data-name');
+    d3.select('#user-label-' + name)
+      .transition()
+      .duration(500)
+      .style("font-size", "14")
+      .style("font-weight", "bold")
+}
+
+function user_mouseout(d, i) {
+    var element = d3.select(this);
+    element.transition().duration(500).attr('r', 3);
+    var name = element.attr('data-name');
+    d3.select('#user-label-' + name)
+      .transition()
+      .duration(500)
+      .style("font-size","10")
+      .style("font-weight", "")
 }
