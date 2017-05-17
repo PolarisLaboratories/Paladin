@@ -352,25 +352,34 @@ function room_select(d, i) {
 }
 
 function user_mouseover(d, i) {
-    var element = d3.select(this);
-    element.transition().duration(ZOOM_DURATION).attr('r', USER_ZOOM_RADIUS)
-    var x = element.attr('cx');
-    var y = element.attr('cy');
-    var name = element.attr('data-name');
-    d3.select('#user-label-' + name)
-      .transition()
-      .duration(ZOOM_DURATION)
-      .style("font-size", "14")
+    var circle = d3.select(this);
+    var x = circle.attr('cx');
+    var y = circle.attr('cy');
+    var name = circle.attr('data-name');
+    var text = d3.select('#user-label-' + name);
+    var rawCircle = this;
+    d3.selectAll('circle').transition().style('opacity',function () {
+            return (this === rawCircle) ? 1.0 : 0.5;
+    });
+    circle.transition().duration(ZOOM_DURATION).attr('r', USER_ZOOM_RADIUS)
+    text.transition()
+        .duration(ZOOM_DURATION)
+        .attr('fill', 'black')
+        .style("font-size", "16")
+        .style("font-weight", "bold")
 }
 
 function user_mouseout(d, i) {
-    var element = d3.select(this);
-    element.transition().duration(ZOOM_DURATION).attr('r', USER_RADIUS);
-    var name = element.attr('data-name');
+    var circle = d3.select(this);
+    var name = circle.attr('data-name');
+    d3.selectAll('circle').transition().style('opacity', 1.0);
+    circle.transition().duration(ZOOM_DURATION).attr('r', USER_RADIUS);
     d3.select('#user-label-' + name)
       .transition()
       .duration(ZOOM_DURATION)
+      .attr('fill', 'red')
       .style("font-size","10")
+      .style("font-weight", "")
 }
 
 function user_click(d, i) {
