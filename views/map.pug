@@ -73,3 +73,14 @@ block body
                 .text-center
                     button(type="submit").btn.btn-primary Save
                     button.btn.btn-danger#delete-room Delete
+        #user-container.card(hidden)
+            h4#user-header User
+            form.form-horizontal#roomname-form
+                .form-group
+                    label(for="username").control-label.col-sm-2 Name:
+                    .col-sm-10
+                        input(type="text" name="username" autocomplete="off").form-control#username
+                .form-group
+                    label(for="location").control-label.col-sm-2 Name:
+                    .col-sm-10
+                        input(type="text" name="location" autocomplete="off").form-control#location

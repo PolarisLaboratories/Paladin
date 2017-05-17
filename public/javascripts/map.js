@@ -11,6 +11,7 @@ var zoom;
 var g;
 
 var roomList = [];
+var userList = [];
 
 var roomEditEnabled = false;
 
@@ -148,7 +149,9 @@ function rooms(response) {
 
 function users(response) {
     $(".user, .user-label").remove();
+    userList = [];
     for (var user of response.data) {
+        userList.push(user);
         var room = roomList.find(function(room) {
             return room.name == user.location;
         });
@@ -161,6 +164,7 @@ function users(response) {
                   .attr('fill', 'red')
                   .on("mouseover", user_mouseover)
                   .on("mouseout", user_mouseout)
+                  .on("click", user_click);
             var text = drawText(circle.attr('cx') - 15, circle.attr('cy') - 10, user.firstname + ' ' + user.lastname);
             text.attr('class', 'user-label')
                 .attr('id', 'user-label-' + user.username)
@@ -301,7 +305,6 @@ function room_mouseout(d, i) {
 
 function room_select(d, i) {
     var element = d3.select(this);
-    var element = d3.select(this);
     element.attr('fill', 'orange')
         .attr('r', 10)
     var x = element.attr('cx');
@@ -310,6 +313,7 @@ function room_select(d, i) {
     var id = element.attr('data-id');
     $("#room-label-" + name).css("font-weight","Bold");
     $("#welcome-container").hide();
+    $("#user-container").hide();
     $("#roomname-edit").val(name);
     $("#room-container").show();
     $("#roomname-form").on('submit', function(e) {
@@ -358,4 +362,17 @@ function user_mouseout(d, i) {
       .duration(500)
       .style("font-size","10")
       .style("font-weight", "")
+}
+
+function user_click(d, i) {
+    $("#welcome-container").hide();
+    $("#room-container").hide();
+    var element = d3.select(this);
+    var username = element.attr('data-name');
+    var user = userList.find(function(user) {
+        return user.username == username;
+    });
+    $("#username").val(user.firstname + ' ' + user.lastname);
+    $("#location").val(user.location);
+    $("#user-container").show();
 }
