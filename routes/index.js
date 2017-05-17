@@ -251,12 +251,19 @@ router.post('/users/tag/:tagid/location/:location', function(req, res, next) {
                     "message" : err
                 });
             }
+            res.json({
+                "status" : "success",
+                "code" : 200,
+                "message" : "User information updated successfully"
+            })
+            Account.find({}).lean().exec(function(err, users) {
+                var res = {
+                'type': 'users',
+                'data': users
+                };
+                wss.broadcast(JSON.stringify(res));
+            });
         });
-        res.json({
-            "status" : "success",
-            "code" : 200,
-            "message" : "User information updated successfully"
-        })
     })
 });
 

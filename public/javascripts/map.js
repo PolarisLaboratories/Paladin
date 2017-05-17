@@ -146,17 +146,16 @@ function rooms(response) {
 }
 
 function users(response) {
-    $(".users, .user-label").remove();
+    $(".user, .user-label").remove();
     for (var user of response.data) {
         var room = roomList.find(function(room) {
             return room.name == user.location;
         });
         if (!room) {
-            console.log("Invalid room specified for user");
+            console.log("Invalid room specified for user " + username + ". Room: " + user.location);
         } else {
-            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 2, room.name, room._id);
-            circle.attr('data-name', user.name)
-                  .attr('data-id', user._id)
+            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 3, room.name, room._id);
+            circle.attr('data-name', user.firstname + ' ' + user.lastname)
                   .attr('class', 'user')
                   .attr('fill', 'red')
             var text = drawText(circle.attr('cx') - 15, circle.attr('cy') - 8, user.firstname + ' ' + user.lastname);
