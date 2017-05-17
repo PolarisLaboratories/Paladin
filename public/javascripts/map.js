@@ -15,6 +15,20 @@ var userList = [];
 
 var roomEditEnabled = false;
 
+// Constants
+
+const ROOM_RADIUS = 5;
+const ROOM_ZOOM_RADIUS = 10;
+const ROOM_X_OFFSET = 30;
+const ROOM_Y_OFFSET = 15;
+
+const USER_RADIUS = 4;
+const USER_ZOOM_RADIUS = 8;
+const USER_X_OFFSET = 15;
+const USER_Y_OFFSET = 8;
+
+const ZOOM_DURATION = 500;
+
 // Alert functions
 function banner(type, message, delay) {
     $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert ' + type + ' show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
@@ -129,14 +143,14 @@ function rooms(response) {
     roomList = [];
     for (var room of response.data) {
         roomList.push(room);
-        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5, room.name, room._id);
+        var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), ROOM_RADIUS);
         circle.attr('data-name', room.name)
               .attr('data-id', room.id)
               .attr('class', 'room')
               .on("mouseover", room_mouseover)
               .on("mouseout", room_mouseout)
               .on("click", room_select);
-        var text = drawText(room.x + (0.5 * width) - 30, room.y + (0.5 * height) - 15, room.name);
+        var text = drawText(room.x + (0.5 * width) - ROOM_X_OFFSET, room.y + (0.5 * height) - ROOM_Y_OFFSET, room.name);
         text.attr('id', 'room-label-' + room.name)
             .attr('class', 'room-label')
             .attr('text-anchor', 'middle')
@@ -156,16 +170,16 @@ function users(response) {
             return room.name == user.location;
         });
         if (!room) {
-            console.log("Invalid room specified for user " + username + ". Room: " + user.location);
+            console.log("Invalid room specified for user " + user.username + ". Room: " + user.location);
         } else {
-            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 3, room.name, room._id);
+            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), USER_RADIUS);
             circle.attr('data-name', user.username)
                   .attr('class', 'user')
                   .attr('fill', 'red')
                   .on("mouseover", user_mouseover)
                   .on("mouseout", user_mouseout)
                   .on("click", user_click);
-            var text = drawText(circle.attr('cx') - 15, circle.attr('cy') - 10, user.firstname + ' ' + user.lastname);
+            var text = drawText(circle.attr('cx') - USER_X_OFFSET, circle.attr('cy') - USER_Y_OFFSET, user.firstname + ' ' + user.lastname);
             text.attr('class', 'user-label')
                 .attr('id', 'user-label-' + user.username)
                 .attr('fill', 'red')
@@ -186,7 +200,7 @@ function drawText(x, y, text) {
 }
 
 // User interface stuff
-function drawCircle(x, y, size, name, id) {
+function drawCircle(x, y, size) {
     var transform = g.attr('transform');
     var circle = svg.append("circle")
               .attr('class', 'circle')
@@ -253,7 +267,7 @@ function dispatch_room(name, x, y) {
         }
     };
     ws.send(JSON.stringify(point));
-    drawCircle(x + (0.5 * width), y + (0.5 * height), 5, name, 0);
+    drawCircle(x + (0.5 * width), y + (0.5 * height), 5);
 }
 
 function toggle_rooms() {
@@ -276,15 +290,15 @@ function toggle_rooms() {
 function room_mouseover(d, i) {
     var element = d3.select(this);
     element.transition()
-           .duration(500)
+           .duration(ZOOM_DURATION)
            .attr('fill', 'blue')
-           .attr('r', 10);
+           .attr('r', ROOM_ZOOM_RADIUS);
     var x = element.attr('cx');
     var y = element.attr('cy');
     var name = element.attr('data-name');
     d3.select("#room-label-" + name)
         .transition()
-        .duration(500)
+        .duration(ZOOM_DURATION)
         .style("font-size", "18")
         .attr("fill", "blue")
 }
@@ -292,26 +306,23 @@ function room_mouseover(d, i) {
 function room_mouseout(d, i) {
     var element = d3.select(this);
     element.transition()
-           .duration(500)
+           .duration(ZOOM_DURATION)
            .attr('fill', 'black')
-           .attr('r', 5);
+           .attr('r', ROOM_RADIUS);
     var name = element.attr('data-name');
     d3.select("#room-label-" + name)
         .transition()
-        .duration(500)
+        .duration(ZOOM_DURATION)
         .style("font-size","14")
         .attr("fill", "black")
 }
 
 function room_select(d, i) {
     var element = d3.select(this);
-    element.attr('fill', 'orange')
-        .attr('r', 10)
     var x = element.attr('cx');
     var y = element.attr('cy');
     var name = element.attr('data-name');
     var id = element.attr('data-id');
-    $("#room-label-" + name).css("font-weight","Bold");
     $("#welcome-container").hide();
     $("#user-container").hide();
     $("#roomname-edit").val(name);
@@ -342,26 +353,24 @@ function room_select(d, i) {
 
 function user_mouseover(d, i) {
     var element = d3.select(this);
-    element.transition().duration(500).attr('r', 8)
+    element.transition().duration(ZOOM_DURATION).attr('r', USER_ZOOM_RADIUS)
     var x = element.attr('cx');
     var y = element.attr('cy');
     var name = element.attr('data-name');
     d3.select('#user-label-' + name)
       .transition()
-      .duration(500)
+      .duration(ZOOM_DURATION)
       .style("font-size", "14")
-      .style("font-weight", "bold")
 }
 
 function user_mouseout(d, i) {
     var element = d3.select(this);
-    element.transition().duration(500).attr('r', 3);
+    element.transition().duration(ZOOM_DURATION).attr('r', USER_RADIUS);
     var name = element.attr('data-name');
     d3.select('#user-label-' + name)
       .transition()
-      .duration(500)
+      .duration(ZOOM_DURATION)
       .style("font-size","10")
-      .style("font-weight", "")
 }
 
 function user_click(d, i) {
