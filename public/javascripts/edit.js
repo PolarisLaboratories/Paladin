@@ -6,6 +6,7 @@ function populateForm(id) {
             $("#lastname").val(user.lastname);
             $("#username").val(user.username);
             $("#role").val(user.role);
+            $("#tagid").val(user.tagid);
             $("#user-form").attr("action", user._id);
         } else {
             $("#user-alert").addClass("alert-danger").show().text(data.message);

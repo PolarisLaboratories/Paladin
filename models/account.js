@@ -7,6 +7,9 @@ var Account = new Schema({
     firstname: String,
     lastname: String,
     role: String,
+    tagID: String,
+    location: String,
+    lastVerification: Date,
 });
 
 Account.plugin(passportLocalMongoose);

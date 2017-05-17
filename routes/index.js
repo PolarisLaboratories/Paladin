@@ -76,7 +76,7 @@ router.post('/users/create', function(req, res, next) {
             "message" : "You do not have permission for this action"
         });
     }
-    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }), req.body.password, function(err, account) {
+    Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role, tagID: req.body.tagID }), req.body.password, function(err, account) {
         if (err) {
             return res.json({
                 "status" : "error",
@@ -117,14 +117,15 @@ router.delete("/users/user/:id", function(req, res, next) {
 });
 
 router.post('/users/user/:id', function(req, res, next) {
-    if (!req.user || req.user._id != req.params.id) {
+    console.log(req.body);
+    if (!req.user || (req.user._id != req.params.id && req.user.role != "Administrator")) {
         return res.json({
             "status" : "error",
             "code" : 401,
             "message" : "You do not have permission for this action"
         });
     }
-    Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role }, function (err, numberAffected, rawResponse) {
+    Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role, tagID: req.body.tagid }, function (err, numberAffected, rawResponse) {
         if (err) {
             return res.json({
                 "status" : "error",
@@ -230,6 +231,32 @@ router.get('/users/user/:id', function(req, res, next) {
             "data" : JSON.stringify(user),
         });
     });
+});
+
+router.post('/users/tag/:tagid/location/:location', function(req, res, next) {
+    Account.findOne({ tagID: req.params.tagid }).lean().exec(function(err, user) {
+        if (err) {
+            return res.json({
+                "status" : "error",
+                "code" : 404,
+                "message" : "Requested user not found in database"
+            });
+        }
+        Account.update({ tagID : req.params.tagid }, { location: req.params.location }, function (err, numberAffected, rawResponse) {
+            if (err) {
+                return res.json({
+                    "status" : "error",
+                    "code" : 500,
+                    "message" : err
+                });
+            }
+        });
+        res.json({
+            "status" : "success",
+            "code" : 200,
+            "message" : "User information updated successfully"
+        })
+    })
 });
 
 module.exports = router;

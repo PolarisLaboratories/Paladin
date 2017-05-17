@@ -31,6 +31,7 @@ append body
                     th First Name
                     th Last Name
                     th Roles
+                    th Tag ID
                     th Manage
         #create-user.modal.fade(role='dialog')
             .modal-dialog
@@ -56,6 +57,10 @@ append body
                                 label(for="username").control-label.col-sm-2 Username:
                                 .col-sm-10
                                     input(type="text" name="username").form-control#create-username
+                            .form-group
+                                label(for="create-tagid").control-label.col-sm-2 Tag ID:
+                                .col-sm-10
+                                    input(type="text" name="tagid").form-control#create-tagid
                             .form-group
                                 label(for="role").control-label.col-sm-2 Role:
                                 .col-sm-10
@@ -106,6 +111,10 @@ append body
                                 label(for="username").control-label.col-sm-2 Username:
                                 .col-sm-10
                                     input(type="text" name="username").form-control#username
+                            .form-group
+                                label(for="tagid").control-label.col-sm-2 Tag ID:
+                                .col-sm-10
+                                    input(type="text" name="tagid").form-control#tagid
                             .form-group
                                 label(for="role").control-label.col-sm-2 Role:
                                 .col-sm-10
