@@ -73,6 +73,13 @@ $(document).ready(function() {
 
     svg.call(zoom);
 
+    d3.selection.prototype.moveUp = function() {
+        return this.each(function() {
+            this.parentNode.appendChild(this);
+        });
+    };
+
+
     connect();
 });
 
@@ -357,8 +364,9 @@ function user_mouseover(d, i) {
     var y = circle.attr('cy');
     var name = circle.attr('data-name');
     var text = d3.select('#user-label-' + name);
+    text.moveUp();
     var rawCircle = this;
-    d3.selectAll('circle').transition().style('opacity',function () {
+    d3.selectAll('circle').transition().duration(ZOOM_DURATION).style('opacity',function () {
             return (this === rawCircle) ? 1.0 : 0.5;
     });
     circle.transition().duration(ZOOM_DURATION).attr('r', USER_ZOOM_RADIUS)
@@ -372,8 +380,7 @@ function user_mouseover(d, i) {
 function user_mouseout(d, i) {
     var circle = d3.select(this);
     var name = circle.attr('data-name');
-    d3.selectAll('circle').transition().style('opacity', 1.0);
-    circle.transition().duration(ZOOM_DURATION).attr('r', USER_RADIUS);
+    d3.selectAll('circle').transition().duration(ZOOM_DURATION).style('opacity', 1.0).attr('r', USER_RADIUS);
     d3.select('#user-label-' + name)
       .transition()
       .duration(ZOOM_DURATION)
