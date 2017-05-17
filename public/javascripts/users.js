@@ -7,7 +7,6 @@ function generateTable() {
             $("#user-table").append('<tbody>');
             $.each(users, function(i, user) {
                 $('<tr>').append(
-                    $('<td>').text(user._id),
                     $('<td>').text(user.username),
                     $('<td>').text(user.firstname),
                     $('<td>').text(user.lastname),
