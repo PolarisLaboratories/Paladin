@@ -2,6 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var Account = require('../models/account');
 var mongodb = require('mongodb');
+var wss = require('../lib/wss');
 var router = express.Router();
 
 function isAuthenticated(req, res, next) {

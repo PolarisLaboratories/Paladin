@@ -10,6 +10,8 @@ var svg;
 var zoom;
 var g;
 
+var roomList = [];
+
 var roomEditEnabled = false;
 
 // Alert functions
@@ -26,6 +28,11 @@ function error(message) {
 
 function warning(message) {
     banner("alert-warning", "Something unexpected occurred. Please contact Polaris Laboratories. Event: " + message, 5000);
+}
+
+// Utilities
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Register all onload stuff here
@@ -59,6 +66,7 @@ var functions = {
     'config': setup,
     'raw': raw,
     'rooms': rooms,
+    'users': users,
 };
 
 function connect() {
@@ -70,7 +78,7 @@ function connect() {
     ws.onmessage = ws_handler;
     ws.onerror = ws_error;
 
-    banner("alert-info", "Connected to " + wsaddr, 3000);
+    banner("alert-info", "Connected to " + wsaddr, 1000);
 }
 
 function ws_error(message) {
@@ -82,7 +90,7 @@ function ws_handler(event) {
     try {
         functions[response.type](response);
     } catch (err) {
-        warning("Server sent unknown WebSocket data.");
+        warning("Server sent unknown WebSocket data. Type: " + response.type);
     }
 }
 
@@ -90,32 +98,6 @@ function ws_handler(event) {
 function raw(response) {
     console.log(response.data);
     banner("alert-info", response.data, 2000);
-}
-
-function drawCircle(x, y, size, name, id) {
-    var transform = g.attr('transform');
-    var circle = svg.append("circle")
-              .attr('class', 'circle')
-              .attr("cx", x)
-              .attr("cy", y)
-              .attr("r", size)
-              .attr('data-name', name)
-              .attr('data-id', id)
-              .attr('transform', transform)
-              .on("mouseover", room_mouseover)
-              .on("mouseout", room_mouseout)
-              .on("click", room_select);
-    var text = svg.append("text")
-       .attr('x', x - 30)
-       .attr('y', y - 15)
-       .attr('id', 'label-' + name)
-       .attr('transform', transform)
-       .text(name);
-    if (roomEditEnabled === false) {
-        circle.attr("visibility", "hidden");
-        text.attr("visibility", "hidden");
-    }
-    return circle;
 }
 
 function setup(response) {
@@ -142,13 +124,70 @@ function setup(response) {
 }
 
 function rooms(response) {
-    $(".circle, text").remove();
+    $(".room, .room-label").remove();
+    roomList = [];
     for (var room of response.data) {
+        roomList.push(room);
         var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), 5, room.name, room._id);
+        circle.attr('data-name', room.name)
+              .attr('data-id', room.id)
+              .attr('class', 'room')
+              .on("mouseover", room_mouseover)
+              .on("mouseout", room_mouseout)
+              .on("click", room_select);
+        var text = drawText(room.x + (0.5 * width) - 30, room.y + (0.5 * height) - 15, room.name);
+        text.attr('id', 'label-' + room.name)
+            .attr('class', 'room-label');
+        if (roomEditEnabled === false) {
+            circle.attr("visibility", "hidden");
+            text.attr("visibility", "hidden");
+        }
     }
 }
 
+function users(response) {
+    $(".users, .user-label").remove();
+    for (var user of response.data) {
+        var room = roomList.find(function(room) {
+            return room.name == user.location;
+        });
+        if (!room) {
+            console.log("Invalid room specified for user");
+        } else {
+            var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), 5, room.name, room._id);
+            circle.attr('data-name', user.name)
+                  .attr('data-id', user._id)
+                  .attr('class', 'user')
+                  .attr('fill', 'red')
+            var text = drawText(circle.attr('cx') - 30, circle.attr('cy') - 15, user.firstname + ' ' + user.lastname);
+            text.attr('class', 'user-label')
+                .attr('fill', 'red')
+        }
+    }
+}
+
+function drawText(x, y, text) {
+    var transform = g.attr('transform');
+    var element = svg.append("text")
+       .attr('x', x)
+       .attr('y', y)
+       .attr('transform', transform)
+       .text(text);
+    return element;
+}
+
 // User interface stuff
+function drawCircle(x, y, size, name, id) {
+    var transform = g.attr('transform');
+    var circle = svg.append("circle")
+              .attr('class', 'circle')
+              .attr("cx", x)
+              .attr("cy", y)
+              .attr("r", size)
+              .attr('transform', transform)
+    return circle;
+}
+
 function zoomed () {
     g.attr("transform", d3.event.transform);
     svg.selectAll("circle, text").attr("transform", d3.event.transform);
@@ -212,14 +251,14 @@ function toggle_rooms() {
     if (roomEditEnabled === false) {
         g.on("click", room_click);
         $('body').prepend('<div id="alert-container" style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert alert-info text-center"><b>Room Editing Mode</b><br>Click on the button again to exit</div></div>');
-        svg.selectAll("circle, text")
+        svg.selectAll(".room, .room-label")
            .attr("visibility", "visible");
     } else {
         g.on("click", function() {
 
         });
         $("#alert-container").remove();
-        svg.selectAll("circle, text")
+        svg.selectAll(".room, .room-label")
            .attr("visibility", "hidden");
     }
     roomEditEnabled = !roomEditEnabled;
