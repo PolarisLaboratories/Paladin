@@ -2,6 +2,9 @@ extends layout
 
 append body
     .container
-        h1 Aww! An error occurred: #{error.status} :(
+        h1 Aww! An error occurred :(
+        img(src="images/Error.png" style="max-width: 100%; max-height: 100vh; height: auto;")
+        br
+        br
         h4 Please copy and paste the below text and send it to us. Thanks!
         pre= 'Error code: ' + error.status + '\n' + error.stack
