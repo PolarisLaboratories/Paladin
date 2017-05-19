@@ -8,12 +8,11 @@ var height = $(window).height();
 
 var svg;
 var zoom;
+var image;
 var g;
 
 var roomList = [];
 var userList = [];
-
-var namesList = [];
 
 var roomEditEnabled = false;
 
@@ -52,12 +51,47 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getTranslation(transform) {
+    // Create a dummy g for calculation purposes only. This will never
+    // be appended to the DOM and will be discarded once this function
+    // returns.
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    // Set the transform attribute to the provided string value.
+    g.setAttributeNS(null, "transform", transform);
+
+    // consolidate the SVGTransformList containing all transformations
+    // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+    // its SVGMatrix.
+    var matrix = g.transform.baseVal.consolidate().matrix;
+
+    // Below calculations are taken and adapted from the private function
+    // transform/decompose.js of D3's module d3-interpolate.
+    var {a, b, c, d, e, f} = matrix;   // ES6, if this doesn't work, use below assignment
+    // var a=matrix.a, b=matrix.b, c=matrix.c, d=matrix.d, e=matrix.e, f=matrix.f; // ES5
+    var scaleX, scaleY, skewX;
+    if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
+    if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
+    if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
+    if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
+    return {
+        translateX: e,
+        translateY: f,
+        rotate: Math.atan2(b, a) * 180 / Math.PI,
+        skewX: Math.atan(skewX) * 180 / Math.PI,
+        scaleX: scaleX,
+        scaleY: scaleY,
+    };
+}
+
 // Register all onload stuff here
 $(document).ready(function() {
     // Add handlers for the buttons
     $('#zoom-reset').click(zoom_reset);
     $('#zoom-in').click(zoom_in);
     $('#zoom-out').click(zoom_out);
+
+    $('#search-button').click(search_user);
 
     // Initialize all tooltips
     $('[data-toggle="tooltip"]').tooltip();
@@ -80,6 +114,14 @@ $(document).ready(function() {
             this.parentNode.appendChild(this);
         });
     };
+
+    $("#search-input").keyup(function(event){
+        if(event.keyCode == 13) {
+            if ($("ul").css('display') === "none") {
+                $("#search-button").click();
+            }
+        }
+    });
 
     connect();
 });
@@ -127,7 +169,7 @@ function setup(response) {
     config = response;
 
     // Grab the dimensions from the imsage
-    var image = new Image();
+    image = new Image();
     image.src = config.map;
 
     // Wait for the image to load, or else we get garbage metadata
@@ -185,10 +227,9 @@ function rooms(response) {
 function users(response) {
     $(".user, .user-label").remove();
     userList = [];
-    namesList = [];
     for (var user of response.data) {
+        user.name = user.firstname + ' ' + user.lastname;
         userList.push(user);
-        namesList.push(user.firstname + ' ' + user.lastname);
         var room = roomList.find(function(room) {
             return room.name == user.location;
         });
@@ -202,6 +243,7 @@ function users(response) {
                   .on("mouseover", user_mouseover)
                   .on("mouseout", user_mouseout)
                   .on("click", user_click);
+            user.icon = circle;
             var text = drawText(circle.attr('cx') - USER_X_OFFSET, circle.attr('cy') - USER_Y_OFFSET, user.firstname + ' ' + user.lastname);
             text.attr('class', 'user-label')
                 .attr('id', 'user-label-' + user.username)
@@ -210,7 +252,7 @@ function users(response) {
                 .attr('text-anchor', 'middle')
         }
     }
-    $("#search-input").typeahead({ source:namesList });
+    $("#search-input").typeahead({ source: userList });
 }
 
 function drawText(x, y, text) {
@@ -221,6 +263,32 @@ function drawText(x, y, text) {
        .attr('transform', transform)
        .text(text);
     return element;
+}
+
+function search_user() {
+    var name = $("#search-input").val();
+    console.log("Searching user " + name);
+    var user = userList.find(function(user) {
+        return user.name == name;
+    });
+    var circle = user.icon;
+    var x = circle.attr("cx");
+    var y = circle.attr("cy");
+    var xoffset = image.width / 2 - x;
+    var yoffset = image.height / 2 - y;
+    var transform = g.attr("transform");
+    var t;
+    if (transform) {
+        t = getTranslation(transform);
+    } else {
+        t = getTranslation("translate(0,0) scale(1)");
+    }
+    t.translateX = xoffset;
+    t.translateY = yoffset;
+    console.log("Need to pan to " + xoffset + ', ' + yoffset);
+    var final = d3.zoomIdentity.translate(t.translateX, t.translateY);
+    g.transition().duration(2000).call(zoom.transform, final);
+    // svg.selectAll('g, circle, text').attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
 }
 
 // User interface stuff
