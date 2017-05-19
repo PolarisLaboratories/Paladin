@@ -13,6 +13,8 @@ var g;
 var roomList = [];
 var userList = [];
 
+var namesList = [];
+
 var roomEditEnabled = false;
 
 // Constants
@@ -183,8 +185,10 @@ function rooms(response) {
 function users(response) {
     $(".user, .user-label").remove();
     userList = [];
+    namesList = [];
     for (var user of response.data) {
         userList.push(user);
+        namesList.push(user.firstname + ' ' + user.lastname);
         var room = roomList.find(function(room) {
             return room.name == user.location;
         });
@@ -206,6 +210,7 @@ function users(response) {
                 .attr('text-anchor', 'middle')
         }
     }
+    $("#search-input").typeahead({ source:namesList });
 }
 
 function drawText(x, y, text) {
