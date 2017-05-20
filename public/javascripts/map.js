@@ -147,8 +147,6 @@ function connect() {
     }
     ws.onmessage = ws_handler;
     ws.onerror = ws_error;
-
-    banner("alert-info", "Connected to " + wsaddr, 1000);
 }
 
 function ws_error(message) {
@@ -207,20 +205,20 @@ function room_first_run(response) {
 }
 
 function rooms(response) {
-    $(".room, .room-label").remove();
+    $("circle, .room-label").not('.user').remove();
     roomList = [];
     for (var room of response.data) {
         roomList.push(room);
         var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), ROOM_RADIUS);
         circle.attr('data-name', room.name)
-              .attr('data-id', room.id)
-              .attr('class', 'room')
+              .attr('data-id', room._id)
+              .classed('room', true)
               .on("mouseover", room_mouseover)
               .on("mouseout", room_mouseout)
               .on("click", room_select);
         var text = drawText(room.x + (0.5 * width) - ROOM_X_OFFSET, room.y + (0.5 * height) - ROOM_Y_OFFSET, room.name);
         text.attr('id', 'room-label-' + room.name)
-            .attr('class', 'room-label')
+            .classed('room-label', true)
             .attr('text-anchor', 'middle')
         if (roomEditEnabled === false) {
             circle.attr("visibility", "hidden");
@@ -243,14 +241,14 @@ function users(response) {
         } else {
             var circle = drawCircle(room.x + (0.5 * width) - getRandomInt(-15, 15), room.y + (0.5 * height) - getRandomInt(-15, 15), USER_RADIUS);
             circle.attr('data-name', user.username)
-                  .attr('class', 'user')
+                  .classed('user', true)
                   .attr('fill', 'red')
                   .on("mouseover", user_mouseover)
                   .on("mouseout", user_mouseout)
                   .on("click", user_click);
             user.icon = circle;
             var text = drawText(circle.attr('cx') - USER_X_OFFSET, circle.attr('cy') - USER_Y_OFFSET, user.firstname + ' ' + user.lastname);
-            text.attr('class', 'user-label')
+            text.classed('user-label', true)
                 .attr('id', 'user-label-' + user.username)
                 .attr('fill', 'red')
                 .attr('font-size', '10')
@@ -299,7 +297,7 @@ function search_user() {
 function drawCircle(x, y, size) {
     var transform = g.attr('transform');
     var circle = svg.append("circle")
-              .attr('class', 'circle')
+              .classed('circle', true)
               .attr("cx", x)
               .attr("cy", y)
               .attr("r", size)
@@ -425,7 +423,6 @@ function room_select(d, i) {
     $("#room-container").show();
     $("#roomname-form").on('submit', function(e) {
         event.preventDefault();
-        $('#create-room-form').off('submit');
         var request = {
             'type': 'room_update',
             'data' : {
@@ -434,6 +431,7 @@ function room_select(d, i) {
             }
         }
         ws.send(JSON.stringify(request));
+        $("#roomname-form").off('submit');
     });
     $("#delete-room").on('click', function(e) {
         var request = {
@@ -444,6 +442,7 @@ function room_select(d, i) {
         };
         ws.send(JSON.stringify(request));
         $("#roomname-edit").val('');
+        $("#delete-room").off('click');
     });
 }
 
