@@ -29,6 +29,9 @@ const USER_Y_OFFSET = 8;
 
 const ZOOM_DURATION = 500;
 
+// Zoom setting for searching a user
+const ZOOM_MULT = 4;
+
 // Alert functions
 function banner(type, message, delay) {
     $('body').prepend('<div style="padding: 5px; z-index: 10; position: absolute; right: 0; left: 0;"> <div id="inner-message" class="alert ' + type + ' show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + message + '</div></div>');
@@ -277,8 +280,9 @@ function search_user() {
     var circle = user.icon;
     var x = circle.attr("cx");
     var y = circle.attr("cy");
-    var xoffset = (width * 0.5) - x;
-    var yoffset = (height * 0.5) - y;
+    // Found these values from graphing regressions after manually zooming
+    var xoffset = (width * 0.5) - x * ZOOM_MULT;
+    var yoffset = (height * 0.5) - y * ZOOM_MULT;
     var transform = g.attr("transform");
     var t;
     if (transform) {
@@ -289,7 +293,7 @@ function search_user() {
     t.translateX = xoffset;
     t.translateY = yoffset;
     console.log("Need to pan to " + xoffset + ', ' + yoffset);
-    var final = d3.zoomIdentity.translate(t.translateX, t.translateY);
+    var final = d3.zoomIdentity.translate(t.translateX, t.translateY).scale(ZOOM_MULT);
     svg.transition().duration(2000).call(zoom.transform, final);
 }
 
