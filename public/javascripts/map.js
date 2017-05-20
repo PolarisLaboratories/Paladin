@@ -8,7 +8,6 @@ var height = $(window).height();
 
 var svg;
 var zoom;
-var image;
 var g;
 
 var roomList = [];
@@ -169,7 +168,7 @@ function setup(response) {
     config = response;
 
     // Grab the dimensions from the imsage
-    image = new Image();
+    var image = new Image();
     image.src = config.map;
 
     // Wait for the image to load, or else we get garbage metadata
@@ -274,8 +273,8 @@ function search_user() {
     var circle = user.icon;
     var x = circle.attr("cx");
     var y = circle.attr("cy");
-    var xoffset = image.width / 2 - x;
-    var yoffset = image.height / 2 - y;
+    var xoffset = (width * 0.5) - x;
+    var yoffset = (height * 0.5) - y;
     var transform = g.attr("transform");
     var t;
     if (transform) {
@@ -287,8 +286,7 @@ function search_user() {
     t.translateY = yoffset;
     console.log("Need to pan to " + xoffset + ', ' + yoffset);
     var final = d3.zoomIdentity.translate(t.translateX, t.translateY);
-    g.transition().duration(2000).call(zoom.transform, final);
-    // svg.selectAll('g, circle, text').attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
+    svg.transition().duration(2000).call(zoom.transform, final);
 }
 
 // User interface stuff
