@@ -122,6 +122,12 @@ $(document).ready(function() {
         }
     });
 
+    $("g").on('click', function(e) {
+        if ($("#configure-card").is(":visible")) {
+            $("#configure-card").hide();
+        }
+    });
+
     connect();
 });
 
@@ -413,9 +419,9 @@ function room_select(d, i) {
     var y = element.attr('cy');
     var name = element.attr('data-name');
     var id = element.attr('data-id');
-    $("#welcome-container").hide();
     $("#user-container").hide();
     $("#roomname-edit").val(name);
+    $("#configure-card").show();
     $("#room-container").show();
     $("#roomname-form").on('submit', function(e) {
         event.preventDefault();
@@ -473,8 +479,6 @@ function user_mouseout(d, i) {
 }
 
 function user_click(d, i) {
-    $("#welcome-container").hide();
-    $("#room-container").hide();
     var element = d3.select(this);
     var username = element.attr('data-name');
     var user = userList.find(function(user) {
@@ -482,5 +486,6 @@ function user_click(d, i) {
     });
     $("#username").val(user.firstname + ' ' + user.lastname);
     $("#location").val(user.location);
+    $("#configure-card").show();
     $("#user-container").show();
 }
