@@ -394,11 +394,12 @@ function room_mouseover(d, i) {
     var x = element.attr('cx');
     var y = element.attr('cy');
     var name = element.attr('data-name');
-    d3.select("#room-label-" + name)
-        .transition()
+    var text = d3.select("#room-label-" + name);
+    text.transition()
         .duration(ZOOM_DURATION)
         .style("font-size", "18")
         .attr("fill", "blue")
+    text.moveUp();
 }
 
 function room_mouseout(d, i) {
