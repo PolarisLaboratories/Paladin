@@ -88,6 +88,10 @@ function getTranslation(transform) {
 
 // Register all onload stuff here
 $(document).ready(function() {
+    if (!Modernizr.svg) {
+        error("Your browser is too old! Update to a newer version");
+        return;
+    }
     // Add handlers for the buttons
     $('#zoom-reset').click(zoom_reset);
     $('#zoom-in').click(zoom_in);
