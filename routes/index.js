@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var Account = require('../models/account');
+var Room = require('../models/room');
 var mongodb = require('mongodb');
 var wss = require('../lib/wss');
 var router = express.Router();
@@ -235,7 +236,7 @@ router.get('/users/user/:id', function(req, res, next) {
 });
 
 router.post('/users/tag/:tagid/location/:roomid', function(req, res, next) {
-    Account.findOne({ tagID: req.params.tagid }).lean().exec(function(err, user) {
+    Account.findOne({ tagID: req.params.tagid }, function(err, user) {
         if (err) {
             return res.json({
                 "status" : "error",
@@ -243,7 +244,7 @@ router.post('/users/tag/:tagid/location/:roomid', function(req, res, next) {
                 "message" : "Requested user not found in database"
             });
         }
-        Room.findOne({ roomID: req.params.roomid }).lean.exec(function(err, room) {
+        Room.findOne({ roomID: req.params.roomid }, function(err, room) {
             if (err) {
                 return res.json({
                     "status" : "error",
@@ -251,7 +252,7 @@ router.post('/users/tag/:tagid/location/:roomid', function(req, res, next) {
                     "message" : "Requested room not found in database"
                 });
             }
-            Account.update({ tagID : req.params.tagid }, { location: req.params.location }, function (err, numberAffected, rawResponse) {
+            Account.update({ tagID : req.params.tagid }, { location: room.name }, function (err, numberAffected, rawResponse) {
                 if (err) {
                     return res.json({
                         "status" : "error",
