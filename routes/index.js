@@ -234,7 +234,7 @@ router.get('/users/user/:id', function(req, res, next) {
     });
 });
 
-router.post('/users/tag/:tagid/location/:location', function(req, res, next) {
+router.post('/users/tag/:tagid/location/:roomid', function(req, res, next) {
     Account.findOne({ tagID: req.params.tagid }).lean().exec(function(err, user) {
         if (err) {
             return res.json({
@@ -243,20 +243,29 @@ router.post('/users/tag/:tagid/location/:location', function(req, res, next) {
                 "message" : "Requested user not found in database"
             });
         }
-        Account.update({ tagID : req.params.tagid }, { location: req.params.location }, function (err, numberAffected, rawResponse) {
+        Room.findOne({ roomID: req.params.roomid }).lean.exec(function(err, room) {
             if (err) {
                 return res.json({
                     "status" : "error",
-                    "code" : 500,
-                    "message" : err
+                    "code" : 404,
+                    "message" : "Requested room not found in database"
                 });
             }
-            res.json({
-                "status" : "success",
-                "code" : 200,
-                "message" : "User information updated successfully"
-            })
-            wss.user_broadcast();
+            Account.update({ tagID : req.params.tagid }, { location: req.params.location }, function (err, numberAffected, rawResponse) {
+                if (err) {
+                    return res.json({
+                        "status" : "error",
+                        "code" : 500,
+                        "message" : err
+                    });
+                }
+                res.json({
+                    "status" : "success",
+                    "code" : 200,
+                    "message" : "User information updated successfully"
+                })
+                wss.user_broadcast();
+            });
         });
     })
 });

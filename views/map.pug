@@ -66,6 +66,10 @@ block body
                             label(for="roomname").control-label.col-sm-2 Room name:
                             .col-sm-10
                                 input(type="text" name="roomname" autocomplete="off").form-control#roomname
+                        .form-group
+                            label(for="roomid").control-label.col-sm-2 Room ID:
+                            .col-sm-10
+                                input(type="text" name="roomid" autocomplete="off").form-control#roomid
                         .text-center
                             button(type="submit").btn.btn-default Create
     #configure-card(hidden)
@@ -76,6 +80,10 @@ block body
                     label(for="roomname").control-label.col-sm-2 Room name:
                     .col-sm-10
                         input(type="text" name="roomname" autocomplete="off").form-control#roomname-edit
+                .form-group
+                    label(for="roomid").control-label.col-sm-2 Room ID:
+                    .col-sm-10
+                        input(type="text" name="roomid" autocomplete="off").form-control#roomid-edit
                 .text-center
                     button(type="submit").btn.btn-primary Save
                     button.btn.btn-danger#delete-room Delete

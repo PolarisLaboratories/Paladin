@@ -219,6 +219,7 @@ function rooms(response) {
         var circle = drawCircle(room.x + (0.5 * width), room.y + (0.5 * height), ROOM_RADIUS);
         circle.attr('data-name', room.name)
               .attr('data-id', room._id)
+              .attr('data-roomid', room.roomID)
               .classed('room', true)
               .on("mouseover", room_mouseover)
               .on("mouseout", room_mouseout)
@@ -353,17 +354,19 @@ function room_click() {
     $('#create-room-form').on('submit', function(e) {
         event.preventDefault();
         $('#create-room-form').off('submit');
-        dispatch_room($("#roomname").val(), x, y);
+        dispatch_room($("#roomname").val(), $("#roomid").val(), x, y);
         $("#create-room").modal("toggle");
-        $("#roomname").val("");
+        $("#roomname").val('');
+        $("#roomid").val('')
     });
 }
 
-function dispatch_room(name, x, y) {
+function dispatch_room(name, id, x, y) {
     var point = {
         'type': 'room_create',
         'data': {
             'name': name,
+            'roomid': id,
             'x': x,
             'y': y
         }
@@ -426,8 +429,10 @@ function room_select(d, i) {
     var y = element.attr('cy');
     var name = element.attr('data-name');
     var id = element.attr('data-id');
+    var roomid = element.attr('data-roomid');
     $("#user-container").hide();
     $("#roomname-edit").val(name);
+    $("#roomid-edit").val(roomid);
     $("#configure-card").show();
     $("#room-container").show();
     $("#roomname-form").on('submit', function(e) {
@@ -437,6 +442,7 @@ function room_select(d, i) {
             'data' : {
                 'id': id,
                 'name' : $('#roomname-edit').val(),
+                'roomid' : $('#roomid-edit').val(),
             }
         }
         ws.send(JSON.stringify(request));
@@ -451,6 +457,7 @@ function room_select(d, i) {
         };
         ws.send(JSON.stringify(request));
         $("#roomname-edit").val('');
+        $("#roomid-edit").val('');
         $("#delete-room").off('click');
     });
 }
