@@ -135,6 +135,22 @@ $(document).ready(function() {
         }
     });
 
+    $(window).on('resize', function(e) {
+        width = $(window).width();
+        height = $(window).height();
+        svg.attr("width", width)
+           .attr("height", height)
+        $("circle, text").remove();
+        var request = {
+           'type': 'user_request'
+        };
+        ws.send(JSON.stringify(request));
+        var request = {
+           'type': 'room_request'
+        };
+        ws.send(JSON.stringify(request));
+    });
+
     connect();
 });
 
