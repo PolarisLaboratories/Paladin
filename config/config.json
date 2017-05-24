@@ -1,3 +1,4 @@
 {
-    "map": "images/AHSF1.svg"
+    "map_path": "images/AHSF1.png",
+    "map_scale": 5
 }

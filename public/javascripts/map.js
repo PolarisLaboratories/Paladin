@@ -138,6 +138,7 @@ $(document).ready(function() {
     $(window).on('resize', function(e) {
         width = $(window).width();
         height = $(window).height();
+        $("div.loading").show();
         svg.attr("width", width)
            .attr("height", height)
         $("circle, text").remove();
@@ -149,6 +150,7 @@ $(document).ready(function() {
            'type': 'room_request'
         };
         ws.send(JSON.stringify(request));
+        $("div.loading").hide();
     });
 
     connect();
@@ -196,21 +198,19 @@ function setup(response) {
 
     // Grab the dimensions from the imsage
     var image = new Image();
-    image.src = config.map;
+    image.src = config.map_path;
 
     // Wait for the image to load, or else we get garbage metadata
     image.onload = function() {
         g.append("svg:image")
-            .attr("xlink:href", config.map)
+            .attr("xlink:href", config.map_path)
             .attr("x", "50%")
             .attr("y", "50%")
-            .attr("width", image.width + "px")
-            .attr("height", image.height + "px")
+            .attr("width", (image.width / config.map_scale) + "px")
+            .attr("height", (image.height / config.map_scale) + "px")
             // Disgusting string concatenation
-            .attr("transform", "translate(-" + image.width / 2 + ", -" + image.height / 2 + ")")
-        // Remove the CSS loading element since the map is technically loaded
-        $("link[href='stylesheets/loading.css']").remove();
-        $("div.loading").remove();
+            .attr("transform", "translate(-" + ((image.width / config.map_scale) / 2) + ", -" + ((image.height / config.map_scale) / 2) + ")")
+        $("div.loading").hide();
     }
 }
 
