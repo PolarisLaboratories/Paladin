@@ -217,6 +217,11 @@ function setup(response) {
             // Disgusting string concatenation
             .attr("transform", "translate(-" + ((image.width / config.map_scale) / 2) + ", -" + ((image.height / config.map_scale) / 2) + ")")
         $("div.loading").hide();
+        // We are ready for room loading. Please send
+        var request = {
+            'type': 'room_request'
+        };
+        ws.send(JSON.stringify(request));
     }
 }
 
