@@ -83,7 +83,7 @@ router.post('/users/create', function(req, res, next) {
             return res.json({
                 "status" : "error",
                 "code" : 500,
-                "message" : err
+                "message" : err.message
             });
         }
         res.json({
@@ -107,7 +107,7 @@ router.delete("/users/user/:id", function(req, res, next) {
             return res.json({
                 "status" : "error",
                 "code" : 500,
-                "message" : err
+                "message" : err.message
             });
         }
         return res.json({
@@ -132,7 +132,7 @@ router.post('/users/user/:id', function(req, res, next) {
             return res.json({
                 "status" : "error",
                 "code" : 500,
-                "message" : err
+                "message" : err.message
             });
         }
     });
@@ -198,7 +198,7 @@ router.get('/users/list', function(req, res, next) {
             return res.json({
                 "status" : "error",
                 "code" : 500,
-                "message" : err
+                "message" : err.message
             });
         }
         return res.json({
@@ -223,7 +223,7 @@ router.get('/users/user/:id', function(req, res, next) {
             return res.json({
                 "status" : "error",
                 "code" : 500,
-                "message" : err
+                "message" : err.message
             });
         }
         return res.json({
@@ -257,7 +257,7 @@ router.post('/users/tag/:tagid/location/:roomid', function(req, res, next) {
                     return res.json({
                         "status" : "error",
                         "code" : 500,
-                        "message" : err
+                        "message" : err.message
                     });
                 }
                 res.json({

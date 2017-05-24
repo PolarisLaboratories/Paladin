@@ -4,22 +4,31 @@ block head
     //- In line with the current security recommendations when working with
     //- WebSockets.
     <meta http-equiv="Content-Security-Policy" content="connect-src 'self' wss:">
+    //- CSS for Material Design
+    link(rel='stylesheet', type='text/css', href='//fonts.googleapis.com/css?family=Roboto:300,400,500,700')
+    link(rel='stylesheet', type='text/css', href='//fonts.googleapis.com/icon?family=Material+Icons')
     //- CSS and Javascript for Bootstrap and jQuery
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous")
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous")
-    //- CSS for the loading animation. Will be removed once page loads
-    link(href="stylesheets/loading.css", rel="stylesheet")
+    //- Even more CSS for Material Design
+    link(rel="stylesheet" type='text/css' href="css/material.css")
+    link(rel="stylesheet" type='text/css' href="css/ripples.css")
+    //- CSS for the loading animation
+    link(href="css/loading.css", rel="stylesheet")
     //- CSS for the map
-    link(href="stylesheets/map.css", rel="stylesheet")
+    link(href="css/map.css", rel="stylesheet")
     //- Load d3 before our scripts, otherwise we get errors about undefined
     //- functions.
     script(src="https://d3js.org/d3.v4.min.js")
     //- Load Modernizr to test for browser compatibility
-    script(src="../javascripts/modernizr.js")
+    script(src="../js/modernizr.js")
+    //- Material design scripts
+    script(src="js/material.js")
+    script(src="js/ripples.js")
     //- Load our scripts
-    script(src="../javascripts/typeahead.min.js")
-    script(src="../javascripts/map.js")
+    script(src="../js/typeahead.min.js")
+    script(src="../js/map.js")
 
 block body
     //- These divs will be removed in the Javascript once the page loads

@@ -2,37 +2,38 @@ extends ../layout
 
 append head
     script(type='text/javascript').
-        window.onload = function() {
+        $(document).ready(function() {
             $('#confirm-delete').on('show.bs.modal', function(e) {
                 $(this).find('#delete-ok').attr('href', $(e.relatedTarget).data('href'));
             });
-        };
-    script(src='/javascripts/users.js')
-    script(src='/javascripts/edit.js')
-    script(src='/javascripts/create.js')
+        });
+    script(src='/js/users.js')
+    script(src='/js/edit.js')
+    script(src='/js/create.js')
 
 append body
     .container
         .alert#users-alert(role="alert" hidden)
         .panel.panel-default
             .panel-heading
-                h3.panel-title Users
-            div(style="margin: 10px")
+                h3.panel-title
+                    b Users
+            .panel-body
                 .col-md-6
                     p#num-users #[strong 0] users in the database
                 .col-md-6.text-right
                     button.btn.btn-success(type='button' data-toggle="modal" data-target="#create-user")
                         span.glyphicon.glyphicon-plus
                         |  Add user
-            table.table.table-bordered.table-hover#user-table
-                thead
-                    th Username
-                    th First Name
-                    th Last Name
-                    th Roles
-                    th Tag ID
-                    th Location
-                    th Manage
+                table.table.table-bordered.table-hover#user-table
+                    thead
+                        th Username
+                        th First Name
+                        th Last Name
+                        th Roles
+                        th Tag ID
+                        th Location
+                        th Manage
         #create-user.modal.fade(role='dialog')
             .modal-dialog
                 .modal-content
@@ -41,39 +42,33 @@ append body
                         h4.modal-title Create User
                     .modal-body
                         .alert#create-alert(role="alert" hidden)
-                        form.form-horizontal#create-form(method="post")
+                        form#create-form(method="post")
                             h3 Personal details
-                            .form-group
-                                label(for="firstname").control-label.col-sm-2 First name:
-                                .col-sm-10
-                                    input(type="text" name="firstname").form-control#create-firstname
-                            .form-group
-                                label(for="lastname").control-label.col-sm-2 Last name:
-                                .col-sm-10
-                                    input(type="text" name="lastname").form-control#create-lastname
+                            .form-group.label-static
+                                label(for="create-first").control-label First name:
+                                input(type="text" name="firstname" required="true").form-control#create-firstname
+                            .form-group.label-static
+                                label(for="create-lastname").control-label Last name:
+                                input(type="text" name="lastname" required="true").form-control#create-lastname
                             hr
                             h3 Account details
-                            .form-group
-                                label(for="username").control-label.col-sm-2 Username:
-                                .col-sm-10
-                                    input(type="text" name="username").form-control#create-username
-                            .form-group
-                                label(for="create-tagid").control-label.col-sm-2 Tag ID:
-                                .col-sm-10
-                                    input(type="text" name="tagid").form-control#create-tagid
-                            .form-group
-                                label(for="role").control-label.col-sm-2 Role:
-                                .col-sm-10
-                                    select.form-control#create-role(name="role")
-                                        option#Administrator Administrator
-                                        option#Teacher Teacher
-                                        option#Student Student
+                            .form-group.label-static
+                                label(for="create-username").control-label Username:
+                                input(type="text" name="username" required="true").form-control#create-username
+                            .form-group.label-static
+                                label(for="create-tagid").control-label Tag ID:
+                                input(type="text" name="tagid" required="true").form-control#create-tagid
+                            .form-group.label-static
+                                label(for="role").control-label Role:
+                                select.form-control#create-role(name="role")
+                                    option#Administrator Administrator
+                                    option#Teacher Teacher
+                                    option#Student Student
                             hr
                             h3 Security
-                            .form-group
-                                label(for="password").control-label.col-sm-2 Password:
-                                .col-sm-10
-                                    input(type="password" name="password").form-control#create-password
+                            .form-group.label-static
+                                label(for="create-password").control-label Password:
+                                input(type="password" name="password" required="true").form-control#create-password
                             .text-center
                                 button(type="submit").btn.btn-success Create                       
         #confirm-delete.modal.fade(role='dialog')
@@ -95,42 +90,36 @@ append body
                         h4.modal-title Edit User
                     .modal-body
                         .alert#user-alert(role="alert" hidden)
-                        form.form-horizontal#user-form(method="post")
+                        form#user-form(method="post")
                             h3 Personal details
-                            .form-group
-                                label(for="firstname").control-label.col-sm-2 First name:
-                                .col-sm-10
-                                    input(type="text" name="firstname").form-control#firstname
-                            .form-group
-                                label(for="lastname").control-label.col-sm-2 Last name:
-                                .col-sm-10
-                                    input(type="text" name="lastname").form-control#lastname
+                            .form-group.label-static
+                                label(for="firstname").control-label First name:
+                                input(type="text" name="firstname").form-control#firstname
+                            .form-group.label-static
+                                label(for="lastname").control-label Last name:
+                                input(type="text" name="lastname").form-control#lastname
                             hr
                             h3 Account details
-                            .form-group
-                                label(for="username").control-label.col-sm-2 Username:
-                                .col-sm-10
-                                    input(type="text" name="username").form-control#username
-                            .form-group
-                                label(for="tagid").control-label.col-sm-2 Tag ID:
-                                .col-sm-10
-                                    input(type="text" name="tagid").form-control#tagid
-                            .form-group
-                                label(for="role").control-label.col-sm-2 Role:
-                                .col-sm-10
-                                    select.form-control#role(name="role")
-                                        option#Administrator Administrator
-                                        option#Teacher Teacher
-                                        option#Student Student
+                            .form-group.label-static
+                                label(for="username").control-label Username:
+                                input(type="text" name="username").form-control#username
+                            .form-group.label-static
+                                label(for="tagid").control-label Tag ID:
+                                input(type="text" name="tagid").form-control#tagid
+                            .form-group.label-static
+                                label(for="role").control-label Role:
+                                select.form-control#role(name="role")
+                                    option#Administrator Administrator
+                                    option#Teacher Teacher
+                                    option#Student Student
                             .text-center
-                                button(type="submit").btn.btn-default Save
-                        form.form-horizontal#password-form(method="post")
+                                button(type="submit").btn.btn-success Save
+                        form#password-form(method="post")
                             hr
                             h3 Security
                             .alert#password-alert(role="alert" hidden)
-                            .form-group
-                                label(for="password").control-label.col-sm-2 Password:
-                                .col-sm-10
-                                    input(type="password" name="password").form-control#password
+                            .form-group.label-static
+                                label(for="password").control-label Password:
+                                input(type="password" name="password").form-control#password
                             .text-center
-                                button(type="submit").btn.btn-default Change Password
+                                button(type="submit").btn.btn-danger Change Password

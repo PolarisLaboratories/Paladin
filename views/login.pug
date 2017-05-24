@@ -4,18 +4,17 @@ append body
     .container
         .panel.panel-default
             .panel-heading
-                h3.panel-title Login
+                h3.panel-title
+                    b Login
             .panel-body
                 if (message != "")
                     .alert.alert-danger(role="alert") #{message}
-                form(method="post").form-horizontal
-                    .form-group
-                        label(for="username").control-label.col-sm-2 Username:
-                        .col-sm-10
-                            input(type="text" required="true" name="username").form-control#username
-                    .form-group
-                        label(for="password").control-label.col-sm-2 Password:
-                        .col-sm-10
-                            input(type="password" required="true" name="password").form-control#password
+                form(method="post")
+                    .form-group.label-floating
+                        label(for="username").control-label Username:
+                        input(type="text" required="true" name="username").form-control#username
+                    .form-group.label-floating
+                        label(for="password").control-label Password:
+                        input(type="password" required="true" name="password").form-control#password
                     .text-center
                         button(type="submit").btn.btn-default Submit
