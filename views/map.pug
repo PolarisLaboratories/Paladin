@@ -45,16 +45,16 @@ block body
             |  | 
             a(href="/") Home
     //- Zoom controls
-    div(id="zoom-bar" class="btn-group-vertical")
-        button(class="btn" id="zoom-in" data-toggle="tooltip" title="Zoom in")
-            span(class="glyphicon glyphicon-zoom-in")
-        button(class="btn" id="zoom-reset" data-toggle="tooltip" title="Reset zoom")
-            span(class="glyphicon glyphicon-picture")
-        button(class="btn" id="zoom-out" data-toggle="tooltip" title="Zoom out")
-            span(class="glyphicon glyphicon-zoom-out")
-    div(id="admin-bar" class="btn-group-vertical")
-        button(class="btn" id="edit-rooms" data-toggle="tooltip" title="Edit rooms" onclick="toggle_rooms()")
-            span(class="glyphicon glyphicon-plus")
+    div.btn-group-vertical#zoom-bar
+        button.btn.btn-raised.zoom-control#zoom-in(data-toggle="tooltip" title="Zoom in")
+            span.glyphicon.glyphicon-zoom-in
+        button.btn.btn-raised.zoom-control#zoom-reset(data-toggle="tooltip" title="Reset zoom")
+            span.glyphicon.glyphicon-picture
+        button.btn.btn-raised.zoom-control#zoom-out(data-toggle="tooltip" title="Zoom out")
+            span.glyphicon.glyphicon-zoom-out
+    div.btn-group-vertical#admin-bar
+        button.btn.btn-raised.admin-control#edit-rooms(data-toggle="tooltip" title="Edit rooms" onclick="toggle_rooms()")
+            span.glyphicon.glyphicon-plus
     //- We insert the svg here instead of doing it with d3 because it's easier
     //- to set CSS from here
     svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
