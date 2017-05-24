@@ -110,6 +110,10 @@ $(document).ready(function() {
     svg = d3.select("svg")
         .attr("width", width)
         .attr("height", height)
+    svg.append('rect')
+       .attr("width", "100%")
+       .attr("height", "100%")
+       .attr("fill", "white");
 
     g = svg.append("g");
 
