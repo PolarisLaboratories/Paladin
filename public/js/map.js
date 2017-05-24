@@ -157,6 +157,8 @@ $(document).ready(function() {
         $("div.loading").hide();
     });
 
+    $.material.init();
+
     connect();
 });
 
@@ -522,5 +524,6 @@ function user_click(d, i) {
     $("#username").val(user.firstname + ' ' + user.lastname);
     $("#location").val(user.location);
     $("#configure-card").show();
+    $("#room-container").hide();
     $("#user-container").show();
 }

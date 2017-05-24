@@ -58,10 +58,10 @@ block body
     //- We insert the svg here instead of doing it with d3 because it's easier
     //- to set CSS from here
     svg(version="1.1" style="margin-left: auto; margin-right: auto; display: block;")
-    #search-bar.input-group
-        input.form-control.input-lg(type='text', placeholder='Search for a user' data-provide='typeahead' autocomplete='off')#search-input
+    #search-bar.input-group.form-group
+        input.form-control(type='text', placeholder='Search for a user' data-provide='typeahead' autocomplete='off')#search-input
         span.input-group-btn
-            button.btn.btn-info.btn-lg(type='button')#search-button
+            button.btn.btn-fab.btn-fab-mini(type='button' style="background-color: #FFF; box-shadow: none; outline: none;")#search-button
                 i.glyphicon.glyphicon-search
     #create-room.modal.fade(role='dialog')
         .modal-dialog
