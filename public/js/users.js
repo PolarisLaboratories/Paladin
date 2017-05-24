@@ -12,7 +12,6 @@ function generateTable() {
                     $('<td>').text(user.lastname),
                     $('<td>').text(user.role),
                     $('<td>').text(user.tagID),
-                    $('<td>').text(user.location),
                     $('<td>').html('<div class="btn-toolbar"><button class="btn btn-primary btn-raised" type="button" data-id="' + user._id + '" data-toggle="modal" data-target="#edit-user">Edit</a><button class="btn btn-danger btn-raised" type="button" data-href="/users/user/' + user._id + '" data-toggle="modal" data-target="#confirm-delete">Delete</button></div>')
                 ).appendTo('#user-table');
             });
