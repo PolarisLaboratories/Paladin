@@ -48,7 +48,7 @@ deploy:
     key: Paladin.zip
     bundle_type: zip
     application: Paladin
-    deployment_group: Paladin-Development
+    deployment_group: Development
     region: us-east-2
     on:
       branch: develop
