@@ -71,13 +71,13 @@ router.get('/test', isAuthenticated, function(req, res, next) {
 
 // API
 router.post('/users/create', function(req, res, next) {
-    if (!req.user) {
-        return res.json({
-            "status" : "error",
-            "code" : 401,
-            "message" : "You do not have permission for this action"
-        });
-    }
+    // if (!req.user) {
+    //     return res.json({
+    //         "status" : "error",
+    //         "code" : 401,
+    //         "message" : "You do not have permission for this action"
+    //     });
+    // }
     Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role, tagID: req.body.tagID }), req.body.password, function(err, account) {
         if (err) {
             return res.json({
