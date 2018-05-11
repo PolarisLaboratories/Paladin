@@ -72,23 +72,17 @@ router.get('/test', isAuthenticated, function(req, res, next) {
 // API
 router.post('/users/create', function(req, res, next) {
     if (!req.user) {
-        return res.json({
-            "status" : "error",
-            "code" : 401,
+        return res.status(401).json({
             "message" : "You do not have permission for this action"
         });
     }
     Account.register(new Account({ username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role, tagID: req.body.tagID }), req.body.password, function(err, account) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 500,
+            return res.status(400).json({
                 "message" : err.message
             });
         }
-        res.json({
-            "status" : "success",
-            "code" : 200,
+        res.status(200).json({
             "message" : "User created successfully"
         });
     });
@@ -96,23 +90,17 @@ router.post('/users/create', function(req, res, next) {
 
 router.delete("/users/user/:id", function(req, res, next) {
     if (!req.user || (req.user._id != req.params.id && req.user.role != "Administrator")) {
-        return res.json({
-            "status" : "error",
-            "code" : 401,
+        return res.status(401).json({
             "message" : "You do not have permission for this action"
         });
     }
     Account.remove({ _id : req.params.id }, function(err) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 500,
+            return res.status(500).json({
                 "message" : err.message
             });
         }
-        return res.json({
-            "status" : "success",
-            "code" : 200,
+        return res.status(200).json({
             "message" : "User deleted successfully"
         })
     });
@@ -121,89 +109,67 @@ router.delete("/users/user/:id", function(req, res, next) {
 router.post('/users/user/:id', function(req, res, next) {
     console.log(req.body);
     if (!req.user || (req.user._id != req.params.id && req.user.role != "Administrator")) {
-        return res.json({
-            "status" : "error",
-            "code" : 401,
+        return res.status(401).json({
             "message" : "You do not have permission for this action"
         });
     }
     Account.update({ _id : req.params.id }, { username : req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, role: req.body.role, tagID: req.body.tagid }, function (err, numberAffected, rawResponse) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 500,
+            return res.status(500).json({
                 "message" : err.message
             });
         }
     });
-    res.json({
-        "status" : "success",
-        "code" : 200,
+    res.status(200).json({
         "message" : "User information updated successfully"
     })
 });
 
 router.post('/users/password/:id', function(req, res, next) {
     if (!req.user || req.user._id != req.params.id) {
-        return res.json({
-            "status" : "error",
-            "code" : 401,
+        return res.status(401).json({
             "message" : "You do not have permission for this action"
         });
     }
     Account.findOne({ _id: req.params.id }, function(err, user) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 404,
+            return res.status(404).json({
                 "message" : "Requested user not found in database"
             });
         }
         user.setPassword(req.body.password, function(err) {
             if (err) {
-                return res.json({
-                    "status" : "error",
-                    "code" : 500,
+                return res.status(500).json({
                     "message" : "An error occurred while setting the password"
                 });
             }
             user.save(function(err) {
                 if (err) {
-                    return res.json({
-                        "status" : "error",
-                        "code" : 500,
+                    return res.status(500).json({
                         "message" : "An error occurred while saving the password"
                     });
                 }
             });
         });
     });
-    return res.json({
-        "status" : "success",
-        "code" : 200,
+    return res.status(200).json({
         "message" : "Password updated successfully"
     });
 });
 
 router.get('/users/list', function(req, res, next) {
     if (!req.user) {
-        return res.json({
-            "status" : "error",
-            "code" : 401,
+        return res.status(401).json({
             "message" : "You do not have permission to perform this action"
         });
     }
     Account.find().lean().exec(function(err, users) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 500,
+            return res.status(500).json({
                 "message" : err.message
             });
         }
-        return res.json({
-            "status" : "success",
-            "code" : 200,
+        return res.status(200).json({
             "message" : "User list retrieved successfully",
             "data" : JSON.stringify(users)
         });
@@ -220,15 +186,11 @@ router.get('/users/user/:id', function(req, res, next) {
     }
     Account.findOne({ _id: req.params.id }).lean().exec(function(err, user) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 500,
+            return res.status(500).json({
                 "message" : err.message
             });
         }
-        return res.json({
-            "status" : "success",
-            "code" : 200,
+        return res.status(200).json({
             "message" : "User listing retrieved",
             "data" : JSON.stringify(user),
         });
@@ -238,31 +200,23 @@ router.get('/users/user/:id', function(req, res, next) {
 router.post('/users/tag/:tagid/location/:roomid', function(req, res, next) {
     Account.findOne({ tagID: req.params.tagid }, function(err, user) {
         if (err) {
-            return res.json({
-                "status" : "error",
-                "code" : 404,
+            return res.status(404).json({
                 "message" : "Requested user not found in database"
             });
         }
         Room.findOne({ roomID: req.params.roomid }, function(err, room) {
             if (err) {
-                return res.json({
-                    "status" : "error",
-                    "code" : 404,
+                return res.status(404).json({
                     "message" : "Requested room not found in database"
                 });
             }
             Account.update({ tagID : req.params.tagid }, { location: room.name }, function (err, numberAffected, rawResponse) {
                 if (err) {
-                    return res.json({
-                        "status" : "error",
-                        "code" : 500,
+                    return res.status(500).json({
                         "message" : err.message
                     });
                 }
-                res.json({
-                    "status" : "success",
-                    "code" : 200,
+                res.status(200).json({
                     "message" : "User information updated successfully"
                 })
                 wss.user_broadcast();
