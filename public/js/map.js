@@ -1,5 +1,5 @@
 var hostname = window.location.hostname;
-var wsaddr = "wss://".concat(hostname, "/map/wss");
+var wsaddr = "ws://".concat(hostname, ":1234/map/wss");
 var ws;
 
 var config;
@@ -174,7 +174,7 @@ function connect() {
     try {
         ws = new WebSocket(wsaddr);
     } catch (err) {
-        banner("alert-danger", error(err), -1);
+        error("Failed to connect to " + wsaddr);
     }
     ws.onmessage = ws_handler;
     ws.onerror = ws_error;

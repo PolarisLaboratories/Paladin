@@ -10,7 +10,7 @@ $(function() {
 
             success: function(data, status) {
                 console.log(data);
-                if (data.status == "success") {
+                if (status === "success") {
                     $(alert).addClass("alert-success");
                 } else {
                     $(alert).addClass("alert-danger");

@@ -1,6 +1,6 @@
 function generateTable() {
-    $.getJSON("/users/list", function(data) {
-        if (data.status == "success") {
+    $.getJSON("/users/list", function(data, status) {
+        if (status === "success") {
             var users = JSON.parse(data.data);
             // Reset the table
             $("#user-table").find("tbody").remove();

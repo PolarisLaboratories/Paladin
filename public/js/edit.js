@@ -1,6 +1,6 @@
 function populateForm(id) {
-    $.getJSON("/users/user/" + id, function(data) {
-        if (data.status == "success") {
+    $.getJSON("/users/user/" + id, function(data, status) {
+        if (status === "success") {
             var user = JSON.parse(data.data);
             $("#firstname").val(user.firstname);
             $("#lastname").val(user.lastname);
@@ -23,7 +23,7 @@ function submitUserForm() {
         data: $(form).serialize(),
 
         success: function(data, status) {
-            if (data.status == "success") {
+            if (status === "success") {
                 $(alert).addClass("alert-success");
             } else {
                 $(alert).addClass("alert-danger");
@@ -44,7 +44,7 @@ function submitPasswordForm() {
         data: $(form).serialize(),
 
         success: function(data, status) {
-            if (data.status == "success") {
+            if (status === "success") {
                 $(alert).addClass("alert-success");
             } else {
                 $(alert).addClass("alert-danger");

@@ -7,7 +7,7 @@ function createUser() {
         data: $(form).serialize(),
 
         success: function(data, status) {
-            if (data.status == "success") {
+            if (status === "success") {
                 $(alert).addClass("alert-success");
             } else {
                 $(alert).addClass("alert-danger");
